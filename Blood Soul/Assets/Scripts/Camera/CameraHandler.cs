@@ -25,30 +25,33 @@ public class CameraHandler : MonoBehaviour
         //Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
     }
-
-    private void FixedUpdate() => FollowToTarget();
-    private void LateUpdate() => RotateToMousePosition();
-
+    private void FixedUpdate()
+    {
+        FollowToTarget();
+        RotateToMousePosition();
+    }
     private void FollowToTarget()
     {
-        Vector3 movePosition = Vector3.SmoothDamp(transform.position, target.position,
-            ref moveSmoothVelocity, moveSpeed);
+        Vector3 movePosition = Vector3.Lerp(transform.position, target.position,
+             moveSpeed * Time.deltaTime);
 
         transform.position = movePosition;
     }
     private void RotateToMousePosition()
     {
-        mouseY += -Input.GetAxis("Mouse Y") * rotationSpeed;
-        mouseX += Input.GetAxis("Mouse X") * rotationSpeed;
+        mouseY += -Input.GetAxis("Mouse Y") * rotationSpeed * Time.deltaTime;
+        mouseX += Input.GetAxis("Mouse X") * rotationSpeed * Time.deltaTime;
         mouseY = Mathf.Clamp(mouseY, HORIZONTAL_MIN_ROTATION, HORIZONTAL_MAX_ROTATION);
 
         CamerLook();
-        transform.rotation = Quaternion.Euler(mouseY, mouseX, 0f);
+        transform.rotation = Quaternion.Slerp
+            (transform.rotation, Quaternion.Euler(mouseY, mouseX, 0f), rotationSpeed * Time.deltaTime);
     }
     private void CamerLook()
     {
         Vector3 angle = (target.position - Camera.position).normalized;
-        Vector3 smoothRotationAngle = Vector3.SmoothDamp(Camera.forward.normalized, angle, ref lookSmoothVelocity, lookSpeed);
+        Vector3 smoothRotationAngle = 
+            Vector3.Slerp(Camera.forward.normalized, angle, lookSpeed * Time.deltaTime);
 
         Camera.forward = smoothRotationAngle;
     }
