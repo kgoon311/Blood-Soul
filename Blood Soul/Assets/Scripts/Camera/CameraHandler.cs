@@ -8,6 +8,7 @@ public class CameraHandler : MonoBehaviour
     private const float HORIZONTAL_MAX_ROTATION = 60f;
 
     [SerializeField] private Transform Camera;
+    [SerializeField] private Transform cameraPivot;
     [SerializeField] private Transform target;
 
     [SerializeField] private float rotationSpeed;
@@ -25,32 +26,39 @@ public class CameraHandler : MonoBehaviour
         //Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
     }
-    private void FixedUpdate()
+    private void LateUpdate()
     {
         FollowToTarget();
         RotateToMousePosition();
     }
     private void FollowToTarget()
     {
-        Vector3 movePosition = Vector3.Lerp(transform.position, target.position,
-             moveSpeed * Time.deltaTime);
+        Vector3 targetPosition = 
+            Vector3.SmoothDamp(transform.position, target.position, ref moveSmoothVelocity, moveSpeed);
 
-        transform.position = movePosition;
+        transform.position = targetPosition;
     }
     private void RotateToMousePosition()
     {
-        mouseY += -Input.GetAxis("Mouse Y") * rotationSpeed * Time.deltaTime;
-        mouseX += Input.GetAxis("Mouse X") * rotationSpeed * Time.deltaTime;
+        mouseY += -Input.GetAxis("Mouse Y") * rotationSpeed;
+        mouseX += Input.GetAxis("Mouse X") * rotationSpeed;
         mouseY = Mathf.Clamp(mouseY, HORIZONTAL_MIN_ROTATION, HORIZONTAL_MAX_ROTATION);
 
-        CamerLook();
-        transform.rotation = Quaternion.Slerp
-            (transform.rotation, Quaternion.Euler(mouseY, mouseX, 0f), rotationSpeed * Time.deltaTime);
+        //CamerLook();
+        Vector3 rotation = Vector3.zero;
+        rotation.y = mouseX;
+        Quaternion targetRotation = Quaternion.Euler(rotation);
+        transform.rotation = targetRotation;
+
+        rotation = Vector3.zero;
+        rotation.x = mouseY;
+        targetRotation = Quaternion.Euler(rotation);
+        cameraPivot.localRotation = targetRotation;
     }
     private void CamerLook()
     {
         Vector3 angle = (target.position - Camera.position).normalized;
-        Vector3 smoothRotationAngle = 
+        Vector3 smoothRotationAngle =
             Vector3.Slerp(Camera.forward.normalized, angle, lookSpeed * Time.deltaTime);
 
         Camera.forward = smoothRotationAngle;
