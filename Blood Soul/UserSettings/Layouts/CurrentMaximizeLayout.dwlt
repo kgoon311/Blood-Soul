@@ -610,9 +610,9 @@ MonoBehaviour:
   m_PlayAudio: 0
   m_AudioPlay: 0
   m_Position:
-    m_Target: {x: -5.1382413, y: 14.735297, z: 110.24387}
+    m_Target: {x: -106.553825, y: -14.262369, z: 8.705302}
     speed: 2
-    m_Value: {x: -5.1382413, y: 14.735297, z: 110.24387}
+    m_Value: {x: -106.553825, y: -14.262369, z: 8.705302}
   m_RenderMode: 0
   m_CameraMode:
     drawMode: 0
@@ -658,13 +658,13 @@ MonoBehaviour:
     m_GridAxis: 1
     m_gridOpacity: 0.5
   m_Rotation:
-    m_Target: {x: 0.099142335, y: -0.025784329, z: 0.0023434928, w: 0.99494666}
+    m_Target: {x: 0.050318822, y: -0.6730651, z: 0.045406975, w: 0.7367818}
     speed: 2
-    m_Value: {x: 0.09912501, y: -0.024286803, z: 0.0021943178, w: 0.9947762}
+    m_Value: {x: 0.05127226, y: -0.67504877, z: 0.04656043, w: 0.7345151}
   m_Size:
-    m_Target: 40.184788
+    m_Target: 54.68594
     speed: 2
-    m_Value: 40.184788
+    m_Value: 54.68594
   m_Ortho:
     m_Target: 0
     speed: 2
@@ -752,10 +752,10 @@ MonoBehaviour:
     m_OverlaysVisible: 1
   m_SceneHierarchy:
     m_TreeViewState:
-      scrollPos: {x: 0, y: 0}
-      m_SelectedIDs: 
-      m_LastClickedID: 0
-      m_ExpandedIDs: 2044eaff2244eaff2644eaff86c9ecff9efbedff7295f3ffa890f4ffc098f4ff68dff4ffbea9f7ffd818f9ff72b5faff80e8ffff2afbffff
+      scrollPos: {x: 0, y: 219.6}
+      m_SelectedIDs: 7e11e4ff
+      m_LastClickedID: -1830530
+      m_ExpandedIDs: 6805e3ff7a11e4ff7e11e4ff2814e4ffe417e4ff901be4ff301de4ff2044eaff2244eaff2644eaff86c9ecff9efbedff7295f3ffa890f4ffc098f4ff68dff4ffbea9f7ffd818f9ff72b5faff80e8ffff2afbffff8aa00000
       m_RenameOverlay:
         m_UserAcceptedRename: 0
         m_Name: 
@@ -771,7 +771,7 @@ MonoBehaviour:
         m_IsRenaming: 0
         m_OriginalEventType: 11
         m_IsRenamingFilename: 0
-        m_ClientGUIView: {fileID: 8}
+        m_ClientGUIView: {fileID: 5}
       m_SearchString: 
     m_ExpandedScenes: []
     m_CurrenRootInstanceID: 0
@@ -854,23 +854,23 @@ MonoBehaviour:
     m_SkipHidden: 0
     m_SearchArea: 1
     m_Folders:
-    - Assets
+    - Assets/Scenes
     m_Globs: []
     m_OriginalText: 
     m_ImportLogFlags: 0
   m_ViewMode: 1
   m_StartGridSize: 83
   m_LastFolders:
-  - Assets
+  - Assets/Scenes
   m_LastFoldersGridSize: 83
   m_LastProjectPath: C:\Users\Taeseonggwon\Downloads\BloodSoul\Blood-Soul\Blood Soul
   m_LockTracker:
     m_IsLocked: 0
   m_FolderTreeState:
-    scrollPos: {x: 0, y: 58.200012}
-    m_SelectedIDs: ca6d0000
-    m_LastClickedID: 28106
-    m_ExpandedIDs: 00000000ca6d0000a86f000000ca9a3b
+    scrollPos: {x: 0, y: 0}
+    m_SelectedIDs: a06f0000
+    m_LastClickedID: 28576
+    m_ExpandedIDs: 00000000ca6d000000ca9a3b
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -923,9 +923,9 @@ MonoBehaviour:
       m_Icon: {fileID: 0}
       m_ResourceFile: 
   m_ListAreaState:
-    m_SelectedInstanceIDs: 
-    m_LastClickedInstanceID: 0
-    m_HadKeyboardFocusLastEvent: 1
+    m_SelectedInstanceIDs: 7e11e4ff
+    m_LastClickedInstanceID: -1830530
+    m_HadKeyboardFocusLastEvent: 0
     m_ExpandedInstanceIDs: c6230000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
@@ -950,7 +950,7 @@ MonoBehaviour:
       m_Icon: {fileID: 0}
       m_ResourceFile: 
     m_NewAssetIndexInList: -1
-    m_ScrollPosition: {x: 0, y: 44.600006}
+    m_ScrollPosition: {x: 0, y: 0}
     m_GridSize: 83
   m_SkipHiddenPackages: 0
   m_DirectoriesAreaWidth: 166
