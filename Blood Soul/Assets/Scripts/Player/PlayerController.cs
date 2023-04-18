@@ -18,7 +18,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private PlayerStats playerStats;
 
     private PlayerInput playerInput;
-    private Rigidbody rb;
+    private Rigidbody rigidBody;
     private Animator playerAnimator;
 
     private Vector3 rotateDirection;
@@ -27,7 +27,7 @@ public class PlayerController : MonoBehaviour
     private void Awake()
     {
         playerInput = GetComponent<PlayerInput>();
-        rb = GetComponent<Rigidbody>();
+        rigidBody = GetComponent<Rigidbody>();
     }
 
     private void FixedUpdate()
@@ -44,9 +44,10 @@ public class PlayerController : MonoBehaviour
         rotateDirection = moveDirection;
         moveDirection = moveDirection.normalized;
 
-        var velocity = moveDirection * playerStats.moveSpeed + Vector3.up * rb.velocity.y;
-        rb.velocity = velocity;
+        var velocity = moveDirection * playerStats.moveSpeed + Vector3.up * rigidBody.velocity.y;
+        rigidBody.velocity = velocity;
     }
+
     private void PlayerRotate(Vector3 direction)
     {
         Vector3 targetDir = direction;
