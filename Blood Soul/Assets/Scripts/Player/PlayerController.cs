@@ -40,7 +40,7 @@ public class PlayerController : MonoBehaviour
         var targetDirection = playerCamera.transform;
         var moveDirection = targetDirection.forward * moveInput.z + targetDirection.right * moveInput.x;
         moveDirection.y = 0;
-
+        
         rotateDirection = moveDirection;
         moveDirection = moveDirection.normalized;
 
@@ -59,6 +59,7 @@ public class PlayerController : MonoBehaviour
         Quaternion targetRotation = Quaternion.Slerp(transform.rotation, rotationValue, Time.deltaTime * turnSmoothTime);
 
         transform.rotation = targetRotation;
+
     }
 
     private void PlayerSprint()
