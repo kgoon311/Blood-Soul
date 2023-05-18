@@ -14,12 +14,13 @@ public class PlayerStats
 
 public class PlayerController : MonoBehaviour
 {
-    [SerializeField] private CameraHandler playerCamera;
     [SerializeField] private PlayerStats playerStats;
+    [Space(10)]
+    [SerializeField] private Animator playerAnimator;
+    [SerializeField] private CameraHandler playerCamera;
 
     private PlayerInput playerInput;
     private Rigidbody rigidBody;
-    private Animator playerAnimator;
 
     private Vector3 rotateDirection;
     private float turnSmoothTime = 5.5f;
@@ -35,6 +36,13 @@ public class PlayerController : MonoBehaviour
         PlayerMovement(playerInput.moveInput);
         PlayerRotate(rotateDirection);
     }
+    private void Update()
+    {
+        PlayerSprint();
+        playerAnimator.SetBool("isRun", playerInput.isSprint);
+        playerAnimator.SetBool("isWalk", (playerInput.moveInput == Vector3.zero) ? false : true);
+    }
+
     private void PlayerMovement(Vector3 moveInput)
     {
         var targetDirection = playerCamera.transform;
@@ -59,12 +67,12 @@ public class PlayerController : MonoBehaviour
         Quaternion targetRotation = Quaternion.Slerp(transform.rotation, rotationValue, Time.deltaTime * turnSmoothTime);
 
         transform.rotation = targetRotation;
-
     }
 
     private void PlayerSprint()
     {
-
+        if (playerInput.isSprint) playerStats.moveSpeed = 15f;
+        else playerStats.moveSpeed = 6;
     }
     private void PlayerJump()
     {
