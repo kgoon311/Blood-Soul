@@ -18,12 +18,18 @@ public class PlayerController : MonoBehaviour
     [Space(10)]
     [SerializeField] private Animator playerAnimator;
     [SerializeField] private CameraHandler playerCamera;
+    [Space(10)]
+    [SerializeField] private Transform player_HeadTrasnfrom;
+    [SerializeField] private Transform player_HandTransfrom;
+    [SerializeField] private Transform player_SwordHolderTransform;
 
     private PlayerInput playerInput;
     private Rigidbody rigidBody;
-
     private Vector3 rotateDirection;
-    private float turnSmoothTime = 5.5f;
+
+    private readonly float turnSmoothTime = 5.5f;
+    private readonly float player_DefaultSpeed = 6f;
+    private readonly float player_SprintSpeed = 15f;
 
     private void Awake()
     {
@@ -38,9 +44,8 @@ public class PlayerController : MonoBehaviour
     }
     private void Update()
     {
+        AnimationUpdate();
         PlayerSprint();
-        playerAnimator.SetBool("isRun", playerInput.isSprint);
-        playerAnimator.SetBool("isWalk", (playerInput.moveInput == Vector3.zero) ? false : true);
     }
 
     private void PlayerMovement(Vector3 moveInput)
@@ -69,10 +74,15 @@ public class PlayerController : MonoBehaviour
         transform.rotation = targetRotation;
     }
 
+    private void AnimationUpdate()
+    {
+        playerAnimator.SetBool("isRun", playerInput.isSprint);
+        playerAnimator.SetBool("isWalk", (playerInput.moveInput == Vector3.zero) ? false : true);
+    }
     private void PlayerSprint()
     {
-        if (playerInput.isSprint) playerStats.moveSpeed = 15f;
-        else playerStats.moveSpeed = 6;
+        if (playerInput.isSprint) playerStats.moveSpeed = player_SprintSpeed;
+        else playerStats.moveSpeed = player_DefaultSpeed;
     }
     private void PlayerJump()
     {
