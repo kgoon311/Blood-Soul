@@ -22,6 +22,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Transform player_HeadTrasnfrom;
     [SerializeField] private Transform player_HandTransfrom;
     [SerializeField] private Transform player_SwordHolderTransform;
+    [SerializeField] private GameObject playerSword;
 
     private PlayerInput playerInput;
     private Rigidbody rigidBody;
@@ -30,6 +31,8 @@ public class PlayerController : MonoBehaviour
     private readonly float turnSmoothTime = 5.5f;
     private readonly float player_DefaultSpeed = 6f;
     private readonly float player_SprintSpeed = 15f;
+
+    private bool isSword = false;
 
     private void Awake()
     {
@@ -78,6 +81,13 @@ public class PlayerController : MonoBehaviour
     {
         playerAnimator.SetBool("isRun", playerInput.isSprint);
         playerAnimator.SetBool("isWalk", (playerInput.moveInput == Vector3.zero) ? false : true);
+
+        if(playerInput.moveInput != Vector3.zero && !isSword)
+        {
+            playerAnimator.SetTrigger("drawSword");
+            PlayerDrawSword();
+            isSword = true;
+        }       
     }
     private void PlayerSprint()
     {
@@ -89,6 +99,17 @@ public class PlayerController : MonoBehaviour
 
     }
     private void PlayerRolling()
+    {
+
+    }
+
+    private void PlayerDrawSword()
+    {
+        playerSword.transform.position = player_HandTransfrom.position;
+        playerSword.transform.rotation = Quaternion.Euler(new Vector3(0, 90, -90));
+        playerSword.transform.SetParent(player_HandTransfrom);
+    }
+    private void PlayerSheathSword()
     {
 
     }
