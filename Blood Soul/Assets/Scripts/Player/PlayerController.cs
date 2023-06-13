@@ -10,24 +10,55 @@ public class PlayerStats
     public float moveSpeed = 0;
     public float jumpForce = 0;
     public float attackDmg = 0;
+
+    public PlayerStats()
+    {
+        health = 200;
+        stamina = 100;
+        moveSpeed = 6;
+        jumpForce = 8;
+        attackDmg = 20;
+    }
 }
 
-public class PlayerController : MonoBehaviour
+public partial class PlayerController : MonoBehaviour
 {
-    [SerializeField] private CameraHandler playerCamera;
     [SerializeField] private PlayerStats playerStats;
+    [Space(10)]
+    [SerializeField] private CameraHandler playerCamera;
+    [SerializeField] private GameObject playerSword;
+    [SerializeField] private Transform player_HeadTrasnfrom;
+    [SerializeField] private Transform player_HandTransform;
+    [SerializeField] private Transform player_SwordHolderTransform;
 
     private PlayerInput playerInput;
-    private Rigidbody rigidBody;
     private Animator playerAnimator;
-
+    private Rigidbody rigidBody;
     private Vector3 rotateDirection;
-    private float turnSmoothTime = 5.5f;
+
+    private float turnSmoothTime;
+    private float player_DefaultSpeed;
+    private float player_SprintSpeed;
+    private float player_RollPower;
+    
+    private bool isSword = false;
+    private bool isInvis = false;
 
     private void Awake()
     {
         playerInput = GetComponent<PlayerInput>();
+        playerAnimator = GetComponent<Animator>();
         rigidBody = GetComponent<Rigidbody>();
+        PlayerInit();
+    }
+    private void PlayerInit()
+    {
+        playerStats = new PlayerStats();
+
+        turnSmoothTime = 5.5f;
+        player_DefaultSpeed = playerStats.moveSpeed;
+        player_SprintSpeed = playerStats.moveSpeed + 9f;
+        player_RollPower = playerStats.moveSpeed * 3f;
     }
 
     private void FixedUpdate()
@@ -35,6 +66,13 @@ public class PlayerController : MonoBehaviour
         PlayerMovement(playerInput.moveInput);
         PlayerRotate(rotateDirection);
     }
+    private void Update()
+    {
+        AnimationUpdate();
+        PlayerSprint();
+        PlayerRoll();
+    }
+
     private void PlayerMovement(Vector3 moveInput)
     {
         var targetDirection = playerCamera.transform;
@@ -59,19 +97,28 @@ public class PlayerController : MonoBehaviour
         Quaternion targetRotation = Quaternion.Slerp(transform.rotation, rotationValue, Time.deltaTime * turnSmoothTime);
 
         transform.rotation = targetRotation;
-
     }
 
     private void PlayerSprint()
     {
-
+        if (playerInput.isSprint) 
+            playerStats.moveSpeed = player_SprintSpeed;
+        else if (playerStats.moveSpeed != player_DefaultSpeed) 
+            playerStats.moveSpeed = player_DefaultSpeed;
     }
+
     private void PlayerJump()
     {
 
     }
-    private void PlayerRolling()
-    {
 
+    private void PlayerRoll()
+    {
+        if (playerInput.isRoll)
+        {
+            AnimationUpdate("playerRoll");
+            rigidBody.AddForce(transform.forward * player_RollPower, ForceMode.Impulse);
+        }
     }
+
 }
