@@ -71,7 +71,7 @@ public partial class PlayerController : MonoBehaviour
     }
     private void Update()
     {
-        PlayerStateMachine();
+        //PlayerStateMachine();
         AnimationUpdate();
         PlayerSprint();
         PlayerRoll();
@@ -80,6 +80,7 @@ public partial class PlayerController : MonoBehaviour
     private void PlayerMovement(Vector3 moveInput)
     {
         if (isIgnoreInput) return;
+        playerAnimator.SetBool("isWalk", (playerInput.moveInput == Vector3.zero) ? false : true);   
 
         var targetDirection = playerCamera.transform;
         var moveDirection = targetDirection.forward * moveInput.z + targetDirection.right * moveInput.x;
@@ -91,8 +92,6 @@ public partial class PlayerController : MonoBehaviour
         var velocity = moveDirection * playerStats.moveSpeed + Vector3.up * rigidBody.velocity.y;
         rigidBody.velocity = velocity;
 
-        playerAnimator.SetBool("isWalk", (playerInput.moveInput == Vector3.zero) ? false : true);
-        
     }
 
     private void PlayerRotate(Vector3 direction)
@@ -123,7 +122,10 @@ public partial class PlayerController : MonoBehaviour
     private void SetPlayerState(PlayerState state)
     {
         if (curPlayerState != state)
+        {
             curPlayerState = state;
+            PlayerStateMachine();
+        }
     }
 
     private void PlayerSprint()
@@ -147,19 +149,15 @@ public partial class PlayerController : MonoBehaviour
 
     private void PlayerRoll()
     {
-        if (playerInput.isRoll)
+        if (playerInput.isRoll && !isAction)
         {
             isIgnoreInput = true;
+            isAction = true;
+
             SetPlayerState(PlayerState.Roll);
             AnimationUpdate("playerRoll");
         }
     }
-
-    public void PlayerRolling()
-    {
-
-    }
-
 }
 
 public enum PlayerState
