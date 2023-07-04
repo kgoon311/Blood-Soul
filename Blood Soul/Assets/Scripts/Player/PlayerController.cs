@@ -31,7 +31,7 @@ public partial class PlayerController : MonoBehaviour
     [SerializeField] private Transform player_HandTransform;
     [SerializeField] private Transform player_SwordHolderTransform;
 
-    private PlayerState curPlayerState = PlayerState.Idle;
+    public PlayerState curPlayerState { get; set; } = PlayerState.Idle;
     private PlayerInput playerInput;
     private Animator playerAnimator;
     private Rigidbody rigidBody;
@@ -44,8 +44,15 @@ public partial class PlayerController : MonoBehaviour
 
     private bool isSword = false;
     private bool isInvis = false;
-    private bool isIgnoreInput = false;
-    private bool isAction = false;
+    public bool isMove
+    {
+        get
+        {
+            return playerInput.moveInput != Vector3.zero;
+        }
+    }
+    public bool isIgnoreInput { get; set; } = false;
+    public bool isDisableAction { get; set; } = false;
 
     private void Awake()
     {
@@ -71,16 +78,14 @@ public partial class PlayerController : MonoBehaviour
     }
     private void Update()
     {
-        //PlayerStateMachine();
-        AnimationUpdate();
         PlayerSprint();
         PlayerRoll();
+        AnimationUpdate();
     }
 
     private void PlayerMovement(Vector3 moveInput)
     {
         if (isIgnoreInput) return;
-        playerAnimator.SetBool("isWalk", (playerInput.moveInput == Vector3.zero) ? false : true);   
 
         var targetDirection = playerCamera.transform;
         var moveDirection = targetDirection.forward * moveInput.z + targetDirection.right * moveInput.x;
@@ -109,13 +114,20 @@ public partial class PlayerController : MonoBehaviour
 
     private void PlayerStateMachine()
     {
+        if (isDisableAction) return;
+
         switch (curPlayerState)
         {
-            case PlayerState.Idle: break;
-            case PlayerState.Walk: break;
-            case PlayerState.Run: PlayerSprint(); break;
-            case PlayerState.Roll: PlayerRoll(); break;
-            case PlayerState.Jump: PlayerJump(); break;
+            case PlayerState.Idle: 
+                break;
+            case PlayerState.Walk: 
+                break;
+            case PlayerState.Run: 
+                break;
+            case PlayerState.Roll: 
+                PlayerRoll_Animation(); 
+                break;
+            case PlayerState.Jump: break;
             case PlayerState.Attack: break;
         }
     }
@@ -149,13 +161,10 @@ public partial class PlayerController : MonoBehaviour
 
     private void PlayerRoll()
     {
-        if (playerInput.isRoll && !isAction)
-        {
-            isIgnoreInput = true;
-            isAction = true;
-
-            SetPlayerState(PlayerState.Roll);
-            AnimationUpdate("playerRoll");
+        if (playerInput.isRoll && !isDisableAction)
+        { 
+            if(isMove)
+                SetPlayerState(PlayerState.Roll);     
         }
     }
 }
