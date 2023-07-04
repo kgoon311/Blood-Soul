@@ -31,6 +31,7 @@ public partial class PlayerController : MonoBehaviour
     [SerializeField] private Transform player_HandTransform;
     [SerializeField] private Transform player_SwordHolderTransform;
 
+    private PlayerState curPlayerState = PlayerState.Idle;
     private PlayerInput playerInput;
     private Animator playerAnimator;
     private Rigidbody rigidBody;
@@ -40,9 +41,11 @@ public partial class PlayerController : MonoBehaviour
     private float player_DefaultSpeed;
     private float player_SprintSpeed;
     private float player_RollPower;
-    
+
     private bool isSword = false;
     private bool isInvis = false;
+    private bool isIgnoreInput = false;
+    private bool isAction = false;
 
     private void Awake()
     {
@@ -58,7 +61,7 @@ public partial class PlayerController : MonoBehaviour
         turnSmoothTime = 5.5f;
         player_DefaultSpeed = playerStats.moveSpeed;
         player_SprintSpeed = playerStats.moveSpeed + 9f;
-        player_RollPower = playerStats.moveSpeed * 3f;
+        player_RollPower = playerStats.moveSpeed * 20f;
     }
 
     private void FixedUpdate()
@@ -68,6 +71,7 @@ public partial class PlayerController : MonoBehaviour
     }
     private void Update()
     {
+        PlayerStateMachine();
         AnimationUpdate();
         PlayerSprint();
         PlayerRoll();
@@ -75,15 +79,20 @@ public partial class PlayerController : MonoBehaviour
 
     private void PlayerMovement(Vector3 moveInput)
     {
+        if (isIgnoreInput) return;
+
         var targetDirection = playerCamera.transform;
         var moveDirection = targetDirection.forward * moveInput.z + targetDirection.right * moveInput.x;
         moveDirection.y = 0;
-        
+
         rotateDirection = moveDirection;
         moveDirection = moveDirection.normalized;
 
         var velocity = moveDirection * playerStats.moveSpeed + Vector3.up * rigidBody.velocity.y;
         rigidBody.velocity = velocity;
+
+        playerAnimator.SetBool("isWalk", (playerInput.moveInput == Vector3.zero) ? false : true);
+        
     }
 
     private void PlayerRotate(Vector3 direction)
@@ -99,12 +108,36 @@ public partial class PlayerController : MonoBehaviour
         transform.rotation = targetRotation;
     }
 
+    private void PlayerStateMachine()
+    {
+        switch (curPlayerState)
+        {
+            case PlayerState.Idle: break;
+            case PlayerState.Walk: break;
+            case PlayerState.Run: PlayerSprint(); break;
+            case PlayerState.Roll: PlayerRoll(); break;
+            case PlayerState.Jump: PlayerJump(); break;
+            case PlayerState.Attack: break;
+        }
+    }
+    private void SetPlayerState(PlayerState state)
+    {
+        if (curPlayerState != state)
+            curPlayerState = state;
+    }
+
     private void PlayerSprint()
     {
-        if (playerInput.isSprint) 
+        if (playerInput.isSprint)
+        {
             playerStats.moveSpeed = player_SprintSpeed;
-        else if (playerStats.moveSpeed != player_DefaultSpeed) 
+            SetPlayerState(PlayerState.Run);
+        }
+        else if (playerStats.moveSpeed != player_DefaultSpeed)
+        {
             playerStats.moveSpeed = player_DefaultSpeed;
+            SetPlayerState(PlayerState.Idle);
+        }
     }
 
     private void PlayerJump()
@@ -116,9 +149,25 @@ public partial class PlayerController : MonoBehaviour
     {
         if (playerInput.isRoll)
         {
+            isIgnoreInput = true;
+            SetPlayerState(PlayerState.Roll);
             AnimationUpdate("playerRoll");
-            rigidBody.AddForce(transform.forward * player_RollPower, ForceMode.Impulse);
         }
     }
 
+    public void PlayerRolling()
+    {
+
+    }
+
+}
+
+public enum PlayerState
+{
+    Idle,
+    Walk,
+    Run,
+    Roll,
+    Jump,
+    Attack
 }
