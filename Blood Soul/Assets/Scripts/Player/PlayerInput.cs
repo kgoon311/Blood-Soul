@@ -13,11 +13,11 @@ public class PlayerInput : MonoBehaviour
     private readonly KeyCode ITEM_KEY = KeyCode.R;
 
     public Vector3 moveInput { get; private set; }
-    public bool isJump = false;
-    public bool isSprint = false;
-    public bool isRoll = false;
-    public bool isItem = false;
-    public bool isAttack = false;
+    public bool isJump { get; private set; } = false;
+    public bool isSprint { get; private set; } = false;
+    public bool isRoll { get; private set; } = false;
+    public bool isItem { get; private set; } = false;
+    public bool isAttack { get; private set; } = false;
 
     private void Update()
     {
@@ -29,5 +29,4 @@ public class PlayerInput : MonoBehaviour
         isItem = Input.GetKeyDown(ITEM_KEY);
         isAttack = Input.GetMouseButtonDown(0);
     }
-
 }

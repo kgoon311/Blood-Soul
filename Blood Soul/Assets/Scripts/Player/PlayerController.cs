@@ -36,6 +36,7 @@ public partial class PlayerController : MonoBehaviour
     private Animator playerAnimator;
     private Rigidbody rigidBody;
     private Vector3 rotateDirection;
+    private Vector3 rollDirection;
 
     private float turnSmoothTime;
     private float player_DefaultSpeed;
@@ -92,6 +93,7 @@ public partial class PlayerController : MonoBehaviour
         moveDirection.y = 0;
 
         rotateDirection = moveDirection;
+        rollDirection = moveDirection.normalized;
         moveDirection = moveDirection.normalized;
 
         var velocity = moveDirection * playerStats.moveSpeed + Vector3.up * rigidBody.velocity.y;
@@ -156,15 +158,21 @@ public partial class PlayerController : MonoBehaviour
 
     private void PlayerJump()
     {
-
+        Debug.Log("Jump");
     }
 
     private void PlayerRoll()
     {
         if (playerInput.isRoll && !isDisableAction)
-        { 
-            if(isMove)
+        {
+            if (isMove)
+            {
+                var rotation = Quaternion.LookRotation(rollDirection);
+                rotation.y = 0;
+
+                transform.rotation = rotation;
                 SetPlayerState(PlayerState.Roll);     
+            }
         }
     }
 }

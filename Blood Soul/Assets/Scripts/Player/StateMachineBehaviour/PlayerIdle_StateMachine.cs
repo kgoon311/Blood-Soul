@@ -15,7 +15,5 @@ public class PlayerIdle_StateMachine : StateMachineBehaviour
         controller.isDisableAction = false;
         controller.isIgnoreInput = false;
         animator.applyRootMotion = false;
-
-        Debug.Log("Idle_Machine");
     }
 }

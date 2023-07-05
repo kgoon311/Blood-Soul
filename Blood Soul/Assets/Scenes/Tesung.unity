@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.17552075, g: 0.2120346, b: 0.25859904, a: 1}
+  m_IndirectSpecularColor: {r: 0.17552088, g: 0.21203482, b: 0.25859967, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -3635,11 +3635,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ee312842f34e50848be2ee7a32cc257a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isJump: 0
-  isSprint: 0
-  isRoll: 0
-  isItem: 0
-  isAttack: 0
 --- !u!54 &403343806
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -3665,7 +3660,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 1
-  m_Constraints: 80
+  m_Constraints: 112
   m_CollisionDetection: 0
 --- !u!4 &403343808
 Transform:
@@ -4114,6 +4109,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 434522439}
+  - component: {fileID: 434522440}
   m_Layer: 0
   m_Name: SoulPillar
   m_TagString: Untagged
@@ -4142,6 +4138,27 @@ Transform:
   m_Father: {fileID: 2001914641}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &434522440
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 434522438}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: -7, y: 15.38, z: 5.82}
+  m_Center: {x: 9.4, y: -15.14, z: 25.19}
 --- !u!1001 &449869987
 PrefabInstance:
   m_ObjectHideFlags: 0
