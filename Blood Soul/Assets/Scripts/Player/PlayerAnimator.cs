@@ -9,7 +9,8 @@ public partial class PlayerController
         if(!isIgnoreInput && !isDisableAction)
             playerAnimator.SetBool("isWalk", isMove);
 
-        playerAnimator.SetBool("isRun", playerInput.isSprint);
+        if(!isMove) playerAnimator.SetBool("isRun", false);
+        else playerAnimator.SetBool("isRun", playerInput.isSprint);
     }
 
     private void SetAnimation(string name, float fadeOut, bool disable = false, bool rootMotion = false, bool ignore = false)

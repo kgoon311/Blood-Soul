@@ -31,7 +31,7 @@ public partial class PlayerController : MonoBehaviour
     [SerializeField] private Transform player_HandTransform;
     [SerializeField] private Transform player_SwordHolderTransform;
 
-    public PlayerState curPlayerState { get; set; } = PlayerState.Idle;
+    private PlayerState curPlayerState = PlayerState.Idle;
     private PlayerInput playerInput;
     private Animator playerAnimator;
     private Rigidbody rigidBody;
@@ -120,20 +120,20 @@ public partial class PlayerController : MonoBehaviour
 
         switch (curPlayerState)
         {
-            case PlayerState.Idle: 
+            case PlayerState.Idle:
                 break;
-            case PlayerState.Walk: 
+            case PlayerState.Walk:
                 break;
-            case PlayerState.Run: 
+            case PlayerState.Run:
                 break;
-            case PlayerState.Roll: 
-                PlayerRoll_Animation(); 
+            case PlayerState.Roll:
+                PlayerRoll_Animation();
                 break;
             case PlayerState.Jump: break;
             case PlayerState.Attack: break;
         }
     }
-    private void SetPlayerState(PlayerState state)
+    public void SetPlayerState(PlayerState state)
     {
         if (curPlayerState != state)
         {
@@ -163,16 +163,13 @@ public partial class PlayerController : MonoBehaviour
 
     private void PlayerRoll()
     {
-        if (playerInput.isRoll && !isDisableAction)
+        if (isMove && (playerInput.isRoll && !isDisableAction))
         {
-            if (isMove)
-            {
-                var rotation = Quaternion.LookRotation(rollDirection);
-                rotation.y = 0;
+            //var rotation = Quaternion.LookRotation(rollDirection);
+            //rotation.y = 0;
 
-                transform.rotation = rotation;
-                SetPlayerState(PlayerState.Roll);     
-            }
+            //transform.rotation = rotation;
+            SetPlayerState(PlayerState.Roll);
         }
     }
 }

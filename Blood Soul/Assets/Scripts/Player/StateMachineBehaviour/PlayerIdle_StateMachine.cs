@@ -11,9 +11,8 @@ public class PlayerIdle_StateMachine : StateMachineBehaviour
     {
         controller = animator.GetComponent<PlayerController>();
 
-        controller.curPlayerState = PlayerState.Idle;
-        controller.isDisableAction = false;
         controller.isIgnoreInput = false;
-        animator.applyRootMotion = false;
+        controller.isDisableAction = false;
+        controller.SetPlayerState(PlayerState.Idle);
     }
 }
