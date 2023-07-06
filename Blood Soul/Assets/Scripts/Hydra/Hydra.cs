@@ -47,6 +47,7 @@ public class Hydra : MonoBehaviour
     [Header("Earth")]
     [SerializeField] private ParticleSystem earthQuakeParticle;
     [SerializeField] private GameObject[] footPos;
+    private bool isEarthQuakeHit;
     private bool isLeftFoot = false;
     private void Awake()
     {
@@ -173,10 +174,23 @@ public class Hydra : MonoBehaviour
             Debug.Log("Tail Hit");
         }    
     }
-    private IEnumerator Earthquake()
+    private IEnumerator EarthQuake()
     {
+        isMove = false;
+        AttackAnim(Pattern.Earthquake);
 
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(8.2f);
+
+        isMove = true;
+        isEarthQuakeHit = false;
+    }
+    public void EarthQuakeCollision()
+    {
+        if (isEarthQuakeHit == false)
+        {
+            isEarthQuakeHit = true;
+            Debug.Log("EarthQuake Hit");
+        }
     }
     public void EarthQuakeParticle()
     {
