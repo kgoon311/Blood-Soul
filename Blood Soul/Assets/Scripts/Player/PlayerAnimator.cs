@@ -13,13 +13,11 @@ public partial class PlayerController
         else playerAnimator.SetBool("isRun", playerInput.isSprint);
     }
 
-    private void SetAnimation(string name, float fadeOut, bool disable = false, bool rootMotion = false, bool ignore = false)
+    private void SetAnimation(bool disable = false, bool rootMotion = false, bool ignore = false)
     {
         isDisableAction = disable;
         isIgnoreInput = ignore;
         playerAnimator.applyRootMotion = rootMotion;
-
-        playerAnimator.CrossFade(name, fadeOut);
     }
 
     private void SetAnimation(string name, bool disable = false, bool rootMotion = false, bool ignore = false)
@@ -32,5 +30,9 @@ public partial class PlayerController
     }
 
     private void PlayerRoll_Animation() => SetAnimation("Player_Roll", true, true, true);
-
+    private void PlayerAttack_Animation()
+    {
+        SetAnimation(true, true, true);
+        playerAnimator.SetTrigger($"Attack{attackCount}");
+    }
 }

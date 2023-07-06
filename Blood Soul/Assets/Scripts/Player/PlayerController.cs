@@ -41,7 +41,7 @@ public partial class PlayerController : MonoBehaviour
     private float turnSmoothTime;
     private float player_DefaultSpeed;
     private float player_SprintSpeed;
-    private int attackCount;
+    private int attackCount = 0;
 
     private bool isSword = false;
     private bool isInvis = false;
@@ -80,6 +80,7 @@ public partial class PlayerController : MonoBehaviour
     {
         PlayerSprint();
         PlayerRoll();
+        PlayerAttack();
         AnimationUpdate();
     }
 
@@ -128,7 +129,9 @@ public partial class PlayerController : MonoBehaviour
             case PlayerState.Roll:
                 PlayerRoll_Animation();
                 break;
-            case PlayerState.Attack: break;
+            case PlayerState.Attack:
+                PlayerAttack_Animation();
+                break;
         }
     }
 
@@ -170,7 +173,28 @@ public partial class PlayerController : MonoBehaviour
 
     private void PlayerAttack()
     {
+        if (attackCount >= 3) attackCount = 0;
 
+        if (playerInput.isAttack)
+        {
+            if(attackCount == 0)
+            {
+                attackCount++;
+                SetPlayerState(PlayerState.Attack);
+            }
+            else
+            {
+                if (playerAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime <= 0.8f)
+                {
+                    attackCount++;
+                    SetPlayerState(PlayerState.Attack);
+                }
+                else
+                {
+                    attackCount = 0;
+                }
+            }
+        }
     }
 }
 
