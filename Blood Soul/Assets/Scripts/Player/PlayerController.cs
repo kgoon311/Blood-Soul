@@ -15,7 +15,7 @@ public class PlayerStats
     {
         health = 200;
         stamina = 100;
-        moveSpeed = 6;
+        moveSpeed = 10;
         jumpForce = 8;
         attackDmg = 20;
     }
