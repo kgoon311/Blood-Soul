@@ -31,16 +31,17 @@ public partial class PlayerController : MonoBehaviour
     [SerializeField] private Transform player_HandTransform;
     [SerializeField] private Transform player_SwordHolderTransform;
 
-    public PlayerState curPlayerState { get; set; } = PlayerState.Idle;
+    private PlayerState curPlayerState = PlayerState.Idle;
     private PlayerInput playerInput;
     private Animator playerAnimator;
     private Rigidbody rigidBody;
     private Vector3 rotateDirection;
+    private Vector3 rollDirection;
 
     private float turnSmoothTime;
     private float player_DefaultSpeed;
     private float player_SprintSpeed;
-    private float player_RollPower;
+    private int attackCount;
 
     private bool isSword = false;
     private bool isInvis = false;
@@ -68,7 +69,6 @@ public partial class PlayerController : MonoBehaviour
         turnSmoothTime = 5.5f;
         player_DefaultSpeed = playerStats.moveSpeed;
         player_SprintSpeed = playerStats.moveSpeed + 9f;
-        player_RollPower = playerStats.moveSpeed * 20f;
     }
 
     private void FixedUpdate()
@@ -92,6 +92,7 @@ public partial class PlayerController : MonoBehaviour
         moveDirection.y = 0;
 
         rotateDirection = moveDirection;
+        rollDirection = moveDirection.normalized;
         moveDirection = moveDirection.normalized;
 
         var velocity = moveDirection * playerStats.moveSpeed + Vector3.up * rigidBody.velocity.y;
@@ -118,24 +119,25 @@ public partial class PlayerController : MonoBehaviour
 
         switch (curPlayerState)
         {
-            case PlayerState.Idle: 
+            case PlayerState.Idle:
                 break;
-            case PlayerState.Walk: 
+            case PlayerState.Walk:
                 break;
-            case PlayerState.Run: 
+            case PlayerState.Run:
                 break;
-            case PlayerState.Roll: 
-                PlayerRoll_Animation(); 
+            case PlayerState.Roll:
+                PlayerRoll_Animation();
                 break;
-            case PlayerState.Jump: break;
             case PlayerState.Attack: break;
         }
     }
-    private void SetPlayerState(PlayerState state)
+
+    public void SetPlayerState(PlayerState state)
     {
         if (curPlayerState != state)
         {
             curPlayerState = state;
+
             PlayerStateMachine();
         }
     }
@@ -154,18 +156,21 @@ public partial class PlayerController : MonoBehaviour
         }
     }
 
-    private void PlayerJump()
-    {
-
-    }
-
     private void PlayerRoll()
     {
-        if (playerInput.isRoll && !isDisableAction)
-        { 
-            if(isMove)
-                SetPlayerState(PlayerState.Roll);     
+        if ((playerInput.isRoll && !isDisableAction) && isMove)
+        {
+            //var rotation = Quaternion.LookRotation(rollDirection);
+            //rotation.y = 0;
+
+            //transform.rotation = rotation;
+            SetPlayerState(PlayerState.Roll);
         }
+    }
+
+    private void PlayerAttack()
+    {
+
     }
 }
 
@@ -175,6 +180,5 @@ public enum PlayerState
     Walk,
     Run,
     Roll,
-    Jump,
     Attack
 }

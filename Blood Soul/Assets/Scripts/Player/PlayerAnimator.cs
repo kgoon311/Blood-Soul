@@ -6,10 +6,11 @@ public partial class PlayerController
 {
     private void AnimationUpdate()
     {
-        if(!isIgnoreInput && !isDisableAction)
-            playerAnimator.SetBool("isWalk", isMove);
+        if (isIgnoreInput || isDisableAction) playerAnimator.SetBool("isWalk", false);
+        else playerAnimator.SetBool("isWalk", isMove);
 
-        playerAnimator.SetBool("isRun", playerInput.isSprint);
+        if (!isMove) playerAnimator.SetBool("isRun", false);
+        else playerAnimator.SetBool("isRun", playerInput.isSprint);
     }
 
     private void SetAnimation(string name, float fadeOut, bool disable = false, bool rootMotion = false, bool ignore = false)
@@ -21,5 +22,15 @@ public partial class PlayerController
         playerAnimator.CrossFade(name, fadeOut);
     }
 
-    private void PlayerRoll_Animation() => SetAnimation("Player_Roll", 0.3f, true, true, true);
+    private void SetAnimation(string name, bool disable = false, bool rootMotion = false, bool ignore = false)
+    {
+        isDisableAction = disable;
+        isIgnoreInput = ignore;
+        playerAnimator.applyRootMotion = rootMotion;
+
+        playerAnimator.Play(name);
+    }
+
+    private void PlayerRoll_Animation() => SetAnimation("Player_Roll", true, true, true);
+
 }
