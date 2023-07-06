@@ -35,6 +35,7 @@ public partial class PlayerController : MonoBehaviour
     private PlayerInput playerInput;
     private Animator playerAnimator;
     private Rigidbody rigidBody;
+    private Coroutine attackCoolCor;
     private Vector3 rotateDirection;
     private Vector3 rollDirection;
 
@@ -43,14 +44,11 @@ public partial class PlayerController : MonoBehaviour
     private float player_SprintSpeed;
     private int attackCount = 0;
 
-    private bool isSword = false;
-    private bool isInvis = false;
+    //private bool isSword = false;
+    //private bool isInvis = false;
     public bool isMove
     {
-        get
-        {
-            return playerInput.moveInput != Vector3.zero;
-        }
+        get => playerInput.moveInput != Vector3.zero;
     }
     public bool isIgnoreInput { get; set; } = false;
     public bool isDisableAction { get; set; } = false;
@@ -143,6 +141,7 @@ public partial class PlayerController : MonoBehaviour
 
             PlayerStateMachine();
         }
+        else if(state == PlayerState.Attack) PlayerStateMachine();
     }
 
     private void PlayerSprint()
@@ -173,28 +172,33 @@ public partial class PlayerController : MonoBehaviour
 
     private void PlayerAttack()
     {
-        if (attackCount >= 3) attackCount = 0;
-
         if (playerInput.isAttack)
         {
-            if(attackCount == 0)
-            {
-                attackCount++;
-                SetPlayerState(PlayerState.Attack);
-            }
-            else
-            {
-                if (playerAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime <= 0.8f)
-                {
-                    attackCount++;
-                    SetPlayerState(PlayerState.Attack);
-                }
-                else
-                {
-                    attackCount = 0;
-                }
-            }
+            if (attackCount >= 3) attackCount = 0;
+            attackCount++;
+
+            print(attackCount);
+            SetPlayerState(PlayerState.Attack);
+
+            if (attackCoolCor != null) StopCoroutine(attackCoolCor);
+            attackCoolCor = StartCoroutine(AttackInputCheck(2.5f));
         }
+    }
+
+    private IEnumerator AttackInputCheck(float time)
+    {
+        float curTime = 0;
+
+        while (true)
+        {
+            if (time <= curTime)
+                break;
+
+            curTime += Time.deltaTime;
+            yield return null;
+        }
+        attackCount = 0;
+        playerAnimator.SetInteger("attackCount", attackCount);
     }
 }
 

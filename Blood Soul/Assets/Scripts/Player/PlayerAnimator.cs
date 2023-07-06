@@ -31,8 +31,8 @@ public partial class PlayerController
 
     private void PlayerRoll_Animation() => SetAnimation("Player_Roll", true, true, true);
     private void PlayerAttack_Animation()
-    {
-        SetAnimation(true, true, true);
-        playerAnimator.SetTrigger($"Attack{attackCount}");
+    {     
+        SetAnimation(false, true, true);
+        playerAnimator.SetInteger("attackCount", attackCount);
     }
 }
