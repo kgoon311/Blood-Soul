@@ -41,7 +41,7 @@ public partial class PlayerController : MonoBehaviour
     private float turnSmoothTime;
     private float player_DefaultSpeed;
     private float player_SprintSpeed;
-    private float player_RollPower;
+    private int attackCount;
 
     private bool isSword = false;
     private bool isInvis = false;
@@ -69,7 +69,6 @@ public partial class PlayerController : MonoBehaviour
         turnSmoothTime = 5.5f;
         player_DefaultSpeed = playerStats.moveSpeed;
         player_SprintSpeed = playerStats.moveSpeed + 9f;
-        player_RollPower = playerStats.moveSpeed * 20f;
     }
 
     private void FixedUpdate()
@@ -129,15 +128,16 @@ public partial class PlayerController : MonoBehaviour
             case PlayerState.Roll:
                 PlayerRoll_Animation();
                 break;
-            case PlayerState.Jump: break;
             case PlayerState.Attack: break;
         }
     }
+
     public void SetPlayerState(PlayerState state)
     {
         if (curPlayerState != state)
         {
             curPlayerState = state;
+
             PlayerStateMachine();
         }
     }
@@ -156,14 +156,9 @@ public partial class PlayerController : MonoBehaviour
         }
     }
 
-    private void PlayerJump()
-    {
-        Debug.Log("Jump");
-    }
-
     private void PlayerRoll()
     {
-        if (isMove && (playerInput.isRoll && !isDisableAction))
+        if ((playerInput.isRoll && !isDisableAction) && isMove)
         {
             //var rotation = Quaternion.LookRotation(rollDirection);
             //rotation.y = 0;
@@ -171,6 +166,11 @@ public partial class PlayerController : MonoBehaviour
             //transform.rotation = rotation;
             SetPlayerState(PlayerState.Roll);
         }
+    }
+
+    private void PlayerAttack()
+    {
+
     }
 }
 
@@ -180,6 +180,5 @@ public enum PlayerState
     Walk,
     Run,
     Roll,
-    Jump,
     Attack
 }
