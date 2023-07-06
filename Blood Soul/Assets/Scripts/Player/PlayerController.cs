@@ -15,7 +15,7 @@ public class PlayerStats
     {
         health = 200;
         stamina = 100;
-        moveSpeed = 10;
+        moveSpeed = 6;
         jumpForce = 8;
         attackDmg = 20;
     }
@@ -35,22 +35,20 @@ public partial class PlayerController : MonoBehaviour
     private PlayerInput playerInput;
     private Animator playerAnimator;
     private Rigidbody rigidBody;
+    private Coroutine attackCoolCor;
     private Vector3 rotateDirection;
     private Vector3 rollDirection;
 
     private float turnSmoothTime;
     private float player_DefaultSpeed;
     private float player_SprintSpeed;
-    private float player_RollPower;
+    private int attackCount = 0;
 
-    private bool isSword = false;
-    private bool isInvis = false;
+    //private bool isSword = false;
+    //private bool isInvis = false;
     public bool isMove
     {
-        get
-        {
-            return playerInput.moveInput != Vector3.zero;
-        }
+        get => playerInput.moveInput != Vector3.zero;
     }
     public bool isIgnoreInput { get; set; } = false;
     public bool isDisableAction { get; set; } = false;
@@ -69,7 +67,6 @@ public partial class PlayerController : MonoBehaviour
         turnSmoothTime = 5.5f;
         player_DefaultSpeed = playerStats.moveSpeed;
         player_SprintSpeed = playerStats.moveSpeed + 9f;
-        player_RollPower = playerStats.moveSpeed * 20f;
     }
 
     private void FixedUpdate()
@@ -81,6 +78,7 @@ public partial class PlayerController : MonoBehaviour
     {
         PlayerSprint();
         PlayerRoll();
+        PlayerAttack();
         AnimationUpdate();
     }
 
@@ -129,17 +127,21 @@ public partial class PlayerController : MonoBehaviour
             case PlayerState.Roll:
                 PlayerRoll_Animation();
                 break;
-            case PlayerState.Jump: break;
-            case PlayerState.Attack: break;
+            case PlayerState.Attack:
+                PlayerAttack_Animation();
+                break;
         }
     }
+
     public void SetPlayerState(PlayerState state)
     {
         if (curPlayerState != state)
         {
             curPlayerState = state;
+
             PlayerStateMachine();
         }
+        else if(state == PlayerState.Attack) PlayerStateMachine();
     }
 
     private void PlayerSprint()
@@ -156,14 +158,9 @@ public partial class PlayerController : MonoBehaviour
         }
     }
 
-    private void PlayerJump()
-    {
-        Debug.Log("Jump");
-    }
-
     private void PlayerRoll()
     {
-        if (isMove && (playerInput.isRoll && !isDisableAction))
+        if ((playerInput.isRoll && !isDisableAction) && isMove)
         {
             //var rotation = Quaternion.LookRotation(rollDirection);
             //rotation.y = 0;
@@ -171,6 +168,37 @@ public partial class PlayerController : MonoBehaviour
             //transform.rotation = rotation;
             SetPlayerState(PlayerState.Roll);
         }
+    }
+
+    private void PlayerAttack()
+    {
+        if (playerInput.isAttack)
+        {
+            if (attackCount >= 3) attackCount = 0;
+            attackCount++;
+
+            print(attackCount);
+            SetPlayerState(PlayerState.Attack);
+
+            if (attackCoolCor != null) StopCoroutine(attackCoolCor);
+            attackCoolCor = StartCoroutine(AttackInputCheck(2.5f));
+        }
+    }
+
+    private IEnumerator AttackInputCheck(float time)
+    {
+        float curTime = 0;
+
+        while (true)
+        {
+            if (time <= curTime)
+                break;
+
+            curTime += Time.deltaTime;
+            yield return null;
+        }
+        attackCount = 0;
+        playerAnimator.SetInteger("attackCount", attackCount);
     }
 }
 
@@ -180,6 +208,5 @@ public enum PlayerState
     Walk,
     Run,
     Roll,
-    Jump,
     Attack
 }
