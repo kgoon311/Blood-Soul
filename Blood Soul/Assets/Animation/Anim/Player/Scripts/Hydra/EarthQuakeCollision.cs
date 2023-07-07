@@ -12,15 +12,8 @@ public class EarthQuakeCollision : MonoBehaviour
         triggerEventType = GetComponent<ParticleSystem>();
         triggerEventType.trigger.AddCollider(Hydra.instance.player.GetComponent<Collider>());
     }
-    private void OnTriggerEnter(Collider other)
-    {
-        if(other.CompareTag("Player"))
-        {
-            Debug.Log("Hit");
-        }
-    }
     private void OnParticleTrigger()
     {
-        Debug.Log("Hit");
+        Hydra.instance.EarthQuakeCollision();
     }
 }
