@@ -42,7 +42,8 @@ public partial class PlayerController : MonoBehaviour
     private float turnSmoothTime;
     private float player_DefaultSpeed;
     private float player_SprintSpeed;
-    private int attackCount = 0;
+    private int curAttackCount = 0;
+    private int preAttackCount = 0;
 
     //private bool isSword = false;
     //private bool isInvis = false;
@@ -174,14 +175,16 @@ public partial class PlayerController : MonoBehaviour
     {
         if (playerInput.isAttack)
         {
-            if (attackCount >= 3) attackCount = 0;
-            attackCount++;
+            if (preAttackCount != curAttackCount) return;
+            if (curAttackCount >= 3) curAttackCount = 0;           
 
-            print(attackCount);
+            curAttackCount++;
+            preAttackCount = curAttackCount;
+
             SetPlayerState(PlayerState.Attack);
 
             if (attackCoolCor != null) StopCoroutine(attackCoolCor);
-            attackCoolCor = StartCoroutine(AttackInputCheck(2.5f));
+            attackCoolCor = StartCoroutine(AttackInputCheck(0.7f));
         }
     }
 
@@ -197,8 +200,9 @@ public partial class PlayerController : MonoBehaviour
             curTime += Time.deltaTime;
             yield return null;
         }
-        attackCount = 0;
-        playerAnimator.SetInteger("attackCount", attackCount);
+        curAttackCount = 0;
+        preAttackCount = 0;
+        playerAnimator.SetInteger("attackCount", curAttackCount);
     }
 }
 

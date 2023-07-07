@@ -33,6 +33,6 @@ public partial class PlayerController
     private void PlayerAttack_Animation()
     {     
         SetAnimation(false, true, true);
-        playerAnimator.SetInteger("attackCount", attackCount);
+        playerAnimator.SetInteger("attackCount", curAttackCount);
     }
 }
