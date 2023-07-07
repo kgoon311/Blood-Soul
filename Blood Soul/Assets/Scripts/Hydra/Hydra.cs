@@ -200,7 +200,7 @@ public class Hydra : MonoBehaviour
             Debug.Log("EarthQuake Hit");
         }
     }
-    
+
 
     private IEnumerator LaserAttack()
     {
@@ -216,7 +216,7 @@ public class Hydra : MonoBehaviour
     ///////////////// - Anim Trigger - ///////////////////
     public void EarthQuakeParticle()
     {
-        Instantiate(earthQuakePS, isLeftFoot? footPos[0].transform.position : footPos[1].transform.position, Quaternion.Euler(90, 0, 0));
+        Instantiate(earthQuakePS, isLeftFoot ? footPos[0].transform.position : footPos[1].transform.position, Quaternion.Euler(90, 0, 0));
         isLeftFoot = !isLeftFoot;
     }
     public void LaserParticle()
@@ -225,11 +225,12 @@ public class Hydra : MonoBehaviour
     }
     private IEnumerator LaserParticlePlay(int idx)
     {
-        switch(idx)
+        switch (idx)
         {
             case 0:
                 {
                     chargerPS[1].SetActive(true);
+                    yield return new WaitForSeconds(1f);
                     laserPS[1].SetActive(true);
                     break;
                 }
@@ -237,6 +238,7 @@ public class Hydra : MonoBehaviour
                 {
                     chargerPS[0].SetActive(true);
                     chargerPS[2].SetActive(true);
+                    yield return new WaitForSeconds(1f);
                     laserPS[0].SetActive(true);
                     laserPS[2].SetActive(true);
                     break;
@@ -246,13 +248,14 @@ public class Hydra : MonoBehaviour
                     chargerPS[0].SetActive(true);
                     chargerPS[1].SetActive(true);
                     chargerPS[2].SetActive(true);
+                    yield return new WaitForSeconds(1f);
                     laserPS[0].SetActive(true);
                     laserPS[1].SetActive(true);
                     laserPS[2].SetActive(true);
                     break;
                 }
         }
-        yield return new WaitForSeconds(3f);
+        yield return new WaitForSeconds(2.5f);
         switch (idx)
         {
             case 0:
@@ -281,7 +284,7 @@ public class Hydra : MonoBehaviour
                 }
         }
     }
-private void OnTriggerEnter(Collider other)
+    private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
             TailCollision();
