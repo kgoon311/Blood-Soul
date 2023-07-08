@@ -15,6 +15,12 @@ public class CameraHandler : MonoBehaviour
     [SerializeField] private float lookSpeed;
     [SerializeField] private float moveSpeed;
 
+    [Space(10)] [Header("Camera Collision")]
+    [SerializeField] private float defaultPosition;
+    [SerializeField] private float cameraSphereRadius;
+    [SerializeField] private float cameraCollisionOffset;
+    [SerializeField] private float minimumCollisionOffset;
+
     private Vector3 lookSmoothVelocity;
     private Vector3 moveSmoothVelocity;
 
@@ -37,7 +43,9 @@ public class CameraHandler : MonoBehaviour
             Vector3.SmoothDamp(transform.position, target.position, ref moveSmoothVelocity, moveSpeed);
 
         transform.position = targetPosition;
+        CameraCollisions();
     }
+
     private void RotateToMousePosition()
     {
         mouseY += -Input.GetAxis("Mouse Y") * rotationSpeed;
@@ -55,6 +63,32 @@ public class CameraHandler : MonoBehaviour
         targetRotation = Quaternion.Euler(rotation);
         cameraPivot.localRotation = targetRotation;
     }
+
+    private void CameraCollisions()
+    {
+        var targetPosition = defaultPosition;
+
+        RaycastHit hit;
+        Vector3 direction = Camera.position - cameraPivot.position;
+        direction.Normalize();
+
+        if(Physics.SphereCast(cameraPivot.position, cameraSphereRadius, direction, out hit, Mathf.Abs(targetPosition),
+            ~LayerMask.GetMask("Player")))
+        {
+            float dis = Vector3.Distance(cameraPivot.position, hit.point);
+            targetPosition = -(dis - cameraCollisionOffset);
+        }
+
+        if (Mathf.Abs(targetPosition) < minimumCollisionOffset)
+        {
+            targetPosition = -minimumCollisionOffset;
+        }
+
+        Vector3 cameraPostition = Camera.localPosition;
+        cameraPostition.z = Mathf.Lerp(Camera.localPosition.z, targetPosition, Time.deltaTime / 0.2f);
+        Camera.localPosition = cameraPostition;
+    }
+
     private void CamerLook()
     {
         Vector3 angle = (target.position - Camera.position).normalized;

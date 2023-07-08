@@ -3,19 +3,22 @@ using System.Collections.Generic;
 using System.Net.NetworkInformation;
 using UnityEngine;
 
-public class Player : MonoBehaviour
+public class Player : Singleton<Player>
 {
     public PlayerStats playerStats;
     private PlayerController playerController;
-
     [SerializeField] private GaugeBar playerHpGauge;
     [SerializeField] private GaugeBar playerMpGauge;
     [SerializeField] private GaugeBar playerStaminaGauge;
-
+    [SerializeField] private GameObject helmat;
     [SerializeField] private float staminaPlayBackValue;
     private float maxPlayerHp;
     private float maxPlayerMp;
     private float maxPlayerStamina;
+    private bool isDie = false;
+
+    public int CurItemIndex { get; set; } = 0;
+    #region Gauge
 
     public float HP
     {
@@ -60,9 +63,13 @@ public class Player : MonoBehaviour
         }
     }
 
+    #endregion
+
     private void Awake()
     {
         playerController = GetComponent<PlayerController>();
+
+        SetInst();
         PlayerInit();
     }
 
@@ -85,6 +92,15 @@ public class Player : MonoBehaviour
         {
             var value = staminaPlayBackValue * Time.deltaTime;
             Stamina += value;
+        }
+    }
+    public void GetSkill() => playerController.isExistSkill = true;
+    public void GetHelmat() => helmat.SetActive(true);
+    public void GetDamage(float damage)
+    {
+        if(damage > 0)
+        {
+            HP -= damage;
         }
     }
 }

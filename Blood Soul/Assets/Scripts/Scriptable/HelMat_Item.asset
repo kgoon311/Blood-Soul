@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 43a12b9ae08a20c4f9b725ce7fdee18f, type: 3}
+  m_Name: HelMat_Item
+  m_EditorClassIdentifier: 
+  itemName: Knight Helmat
+  type: 1
+  itemUI: {fileID: 5520556686076550494, guid: febd664f4bace2a4fbf3116ca898aa7f, type: 3}
+  itemSprite: {fileID: 61975622, guid: 1cda8653eee96b049b61bd70d9a4db0a, type: 3}

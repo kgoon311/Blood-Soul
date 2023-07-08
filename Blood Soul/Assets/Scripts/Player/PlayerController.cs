@@ -9,9 +9,6 @@ public partial class PlayerController : MonoBehaviour
     [Space(10)]
     [SerializeField] private CameraHandler playerCamera;
     [SerializeField] private GameObject playerSword;
-    [SerializeField] private Transform player_HeadTrasnfrom;
-    [SerializeField] private Transform player_HandTransform;
-    [SerializeField] private Transform player_SwordHolderTransform;
 
     private PlayerState curPlayerState = PlayerState.Idle;
     private PlayerInput playerInput;
@@ -43,6 +40,7 @@ public partial class PlayerController : MonoBehaviour
             return playerInput.moveInput != Vector3.zero;
         }
     }
+    public bool isExistSkill { get; set; } = false;
     public bool isIgnoreInput { get; set; } = false;
     public bool isDisableAction { get; set; } = false;
 
@@ -72,6 +70,7 @@ public partial class PlayerController : MonoBehaviour
         PlayerRoll();
         PlayerAttack();
         AnimationUpdate();
+        Player_ItemSwap();
     }
 
     private void PlayerMovement(Vector3 moveInput)
@@ -179,20 +178,28 @@ public partial class PlayerController : MonoBehaviour
     {
         if (playerInput.isAttack)
         {
+            if (!CompareToStamina(attackStaminaAmount)) return;
+
             if (curAttackCount == 0 || (canAttackCombo && canAttackInput))
             {
-                if (!CompareToStamina(attackStaminaAmount)) return;
-                MinusToStamina(attackStaminaAmount);
-
-                if (curAttackCount >= 4) curAttackCount = 0;
-                curAttackCount++;
-                canAttackInput = false;
-
-                SetPlayerState(PlayerState.Attack);
+                StartCoroutine(AttackCoroutine());
             }
         }
+
+        IEnumerator AttackCoroutine()
+        {
+            if (!canAttackCombo) yield return new WaitUntil(() => !isDisableAction);
+            if (curAttackCount >= 4) curAttackCount = 0;
+
+            curAttackCount++;
+            canAttackInput = false;
+
+            MinusToStamina(attackStaminaAmount);
+            SetPlayerState(PlayerState.Attack);
+            yield break;
+        }
     }
-     
+
     public void CanAttackCombo()
     {
         canAttackCombo = true;
@@ -206,6 +213,15 @@ public partial class PlayerController : MonoBehaviour
     }
 
     #endregion
+
+    private void Player_ItemSwap()
+    {
+        if (playerInput.isItemSwap)
+        {
+            player.CurItemIndex = (player.CurItemIndex == 0) ? 1 : 0;
+            UIManager.Inst.ItemUISwap(player.CurItemIndex);
+        }
+    }
 
     private bool CompareToStamina(float amount)
     {
