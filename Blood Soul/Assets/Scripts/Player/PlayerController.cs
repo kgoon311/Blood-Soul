@@ -3,28 +3,9 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
-[System.Serializable]
-public class PlayerStats
-{
-    public float health = 0;
-    public float stamina = 0;
-    public float moveSpeed = 0;
-    public float jumpForce = 0;
-    public float attackDmg = 0;
-
-    public PlayerStats()
-    {
-        health = 200;
-        stamina = 100;
-        moveSpeed = 10;
-        jumpForce = 8;
-        attackDmg = 20;
-    }
-}
-
 public partial class PlayerController : MonoBehaviour
 {
-    [SerializeField] private PlayerStats playerStats;
+    [SerializeField] private Player player;
     [Space(10)]
     [SerializeField] private CameraHandler playerCamera;
     [SerializeField] private GameObject playerSword;
@@ -42,6 +23,10 @@ public partial class PlayerController : MonoBehaviour
     private float player_DefaultSpeed;
     private float player_SprintSpeed;
     private int curAttackCount = 0;
+
+    private readonly float runStaminaAmount = 0.1f;
+    private readonly float rollStaminaAmount = 15f;
+    private readonly float attackStaminaAmount = 10f;
 
     private bool canAttackCombo = false;
     private bool canAttackInput = true;
@@ -63,18 +48,17 @@ public partial class PlayerController : MonoBehaviour
 
     private void Awake()
     {
+        player = GetComponent<Player>();
         playerInput = GetComponent<PlayerInput>();
         playerAnimator = GetComponent<Animator>();
         rigidBody = GetComponent<Rigidbody>();
-        PlayerInit();
+        PlayerControllerInit();
     }
-    private void PlayerInit()
+    private void PlayerControllerInit()
     {
-        playerStats = new PlayerStats();
-
         turnSmoothTime = 5.5f;
-        player_DefaultSpeed = playerStats.moveSpeed;
-        player_SprintSpeed = playerStats.moveSpeed + 8f;
+        player_DefaultSpeed = player.playerStats.moveSpeed;
+        player_SprintSpeed = player.playerStats.moveSpeed + 8f;
     }
 
     private void FixedUpdate()
@@ -101,9 +85,10 @@ public partial class PlayerController : MonoBehaviour
         rotateDirection = moveDirection;
         moveDirection = moveDirection.normalized;
 
-        var velocity = moveDirection * playerStats.moveSpeed + Vector3.up * rigidBody.velocity.y;
+        var velocity = moveDirection * player.playerStats.moveSpeed + Vector3.up * rigidBody.velocity.y;
         rigidBody.velocity = velocity;
 
+        if (isWalk && curPlayerState != PlayerState.Run) SetPlayerState(PlayerState.Walk);
     }
 
     private void PlayerRotate(Vector3 direction)
@@ -126,6 +111,7 @@ public partial class PlayerController : MonoBehaviour
             case PlayerState.Idle:
                 break;
             case PlayerState.Walk:
+                PlayerWalk_Animation();
                 break;
             case PlayerState.Run:
                 break;
@@ -140,23 +126,34 @@ public partial class PlayerController : MonoBehaviour
 
     public void SetPlayerState(PlayerState state)
     {
-        //if (state == curPlayerState) return;
-        if (isDisableAction) return;
-
-        curPlayerState = state;
-        PlayerStateMachine();
+        if (!isDisableAction)
+        {
+            curPlayerState = state;
+            PlayerStateMachine();
+        }
+        else if (canAttackCombo || state == PlayerState.Attack)
+        {
+            PlayerStateMachine();
+        }
     }
 
     private void PlayerSprint()
     {
         if (playerInput.isSprint)
         {
-            playerStats.moveSpeed = player_SprintSpeed;
+            if (!CompareToStamina(runStaminaAmount))
+            {
+                player.playerStats.moveSpeed = player_DefaultSpeed;
+                return;
+            }
+            MinusToStamina(runStaminaAmount);
+
+            player.playerStats.moveSpeed = player_SprintSpeed;
             SetPlayerState(PlayerState.Run);
         }
-        else if (playerStats.moveSpeed != player_DefaultSpeed)
+        else if (player.playerStats.moveSpeed != player_DefaultSpeed)
         {
-            playerStats.moveSpeed = player_DefaultSpeed;
+            player.playerStats.moveSpeed = player_DefaultSpeed;
             SetPlayerState(PlayerState.Idle);
         }
     }
@@ -169,6 +166,9 @@ public partial class PlayerController : MonoBehaviour
             //rotation.y = 0;
 
             //transform.rotation = rotation;
+
+            if (!CompareToStamina(rollStaminaAmount)) return;
+            MinusToStamina(rollStaminaAmount);
             SetPlayerState(PlayerState.Roll);
         }
     }
@@ -179,18 +179,20 @@ public partial class PlayerController : MonoBehaviour
     {
         if (playerInput.isAttack)
         {
-            if ((curAttackCount == 0 || canAttackCombo) && canAttackInput)
+            if (curAttackCount == 0 || (canAttackCombo && canAttackInput))
             {
-                if (curAttackCount >= 3) curAttackCount = 0;
+                if (!CompareToStamina(attackStaminaAmount)) return;
+                MinusToStamina(attackStaminaAmount);
 
+                if (curAttackCount >= 4) curAttackCount = 0;
                 curAttackCount++;
                 canAttackInput = false;
-                SetAnimationValue(false, false, false);
+
                 SetPlayerState(PlayerState.Attack);
             }
         }
     }
-
+     
     public void CanAttackCombo()
     {
         canAttackCombo = true;
@@ -204,6 +206,17 @@ public partial class PlayerController : MonoBehaviour
     }
 
     #endregion
+
+    private bool CompareToStamina(float amount)
+    {
+        if (player.Stamina > amount) return true;
+
+        return false;
+    }
+    private void MinusToStamina(float amount)
+    {
+        player.Stamina -= amount;
+    }
 }
 
 public enum PlayerState

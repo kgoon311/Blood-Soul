@@ -9,7 +9,7 @@ public partial class PlayerController
         if (!isWalk || playerAnimator.applyRootMotion) playerAnimator.SetBool("isWalk", false);
         else playerAnimator.SetBool("isWalk", isWalk);
 
-        if (!isWalk) playerAnimator.SetBool("isRun", false);
+        if (!isWalk || !CompareToStamina(runStaminaAmount)) playerAnimator.SetBool("isRun", false);
         else playerAnimator.SetBool("isRun", playerInput.isSprint);
     }
 
@@ -37,6 +37,8 @@ public partial class PlayerController
     }
 
     private void PlayerRoll_Animation() => PlayTargetAnimation("Player_Roll", true, true, true);
+
+    private void PlayerWalk_Animation() => PlayTargetAnimation("Player_Walk", false, false, false);
 
     private void PlayerAttack_Animation()
     {
