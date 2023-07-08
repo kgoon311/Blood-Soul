@@ -1,29 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
-
-[System.Serializable]
-public class PlayerStats
-{
-    public float health = 0;
-    public float stamina = 0;
-    public float moveSpeed = 0;
-    public float jumpForce = 0;
-    public float attackDmg = 0;
-
-    public PlayerStats()
-    {
-        health = 200;
-        stamina = 100;
-        moveSpeed = 6;
-        jumpForce = 8;
-        attackDmg = 20;
-    }
-}
 
 public partial class PlayerController : MonoBehaviour
 {
-    [SerializeField] private PlayerStats playerStats;
+    [SerializeField] private Player player;
     [Space(10)]
     [SerializeField] private CameraHandler playerCamera;
     [SerializeField] private GameObject playerSword;
@@ -35,38 +17,48 @@ public partial class PlayerController : MonoBehaviour
     private PlayerInput playerInput;
     private Animator playerAnimator;
     private Rigidbody rigidBody;
-    private Coroutine attackCoolCor;
     private Vector3 rotateDirection;
-    private Vector3 rollDirection;
 
     private float turnSmoothTime;
     private float player_DefaultSpeed;
     private float player_SprintSpeed;
-    private int attackCount = 0;
+    private int curAttackCount = 0;
 
+    private readonly float runStaminaAmount = 0.1f;
+    private readonly float rollStaminaAmount = 15f;
+    private readonly float attackStaminaAmount = 10f;
+
+    private bool canAttackCombo = false;
+    private bool canAttackInput = true;
     //private bool isSword = false;
     //private bool isInvis = false;
-    public bool isMove
+    public bool isWalk
     {
-        get => playerInput.moveInput != Vector3.zero;
+        get
+        {
+            if (isIgnoreInput || isDisableAction)
+            {
+                return false;
+            }
+            return playerInput.moveInput != Vector3.zero;
+        }
     }
     public bool isIgnoreInput { get; set; } = false;
     public bool isDisableAction { get; set; } = false;
 
     private void Awake()
     {
+        player = GetComponent<Player>();
         playerInput = GetComponent<PlayerInput>();
         playerAnimator = GetComponent<Animator>();
         rigidBody = GetComponent<Rigidbody>();
-        PlayerInit();
+        PlayerControllerInit();
     }
-    private void PlayerInit()
+    private void PlayerControllerInit()
     {
-        playerStats = new PlayerStats();
-
         turnSmoothTime = 5.5f;
-        player_DefaultSpeed = playerStats.moveSpeed;
-        player_SprintSpeed = playerStats.moveSpeed + 9f;
+        player_DefaultSpeed = player.playerStats.moveSpeed;
+        player_SprintSpeed = player.playerStats.moveSpeed + 8f;
     }
 
     private void FixedUpdate()
@@ -91,12 +83,12 @@ public partial class PlayerController : MonoBehaviour
         moveDirection.y = 0;
 
         rotateDirection = moveDirection;
-        rollDirection = moveDirection.normalized;
         moveDirection = moveDirection.normalized;
 
-        var velocity = moveDirection * playerStats.moveSpeed + Vector3.up * rigidBody.velocity.y;
+        var velocity = moveDirection * player.playerStats.moveSpeed + Vector3.up * rigidBody.velocity.y;
         rigidBody.velocity = velocity;
 
+        if (isWalk && curPlayerState != PlayerState.Run) SetPlayerState(PlayerState.Walk);
     }
 
     private void PlayerRotate(Vector3 direction)
@@ -114,13 +106,12 @@ public partial class PlayerController : MonoBehaviour
 
     private void PlayerStateMachine()
     {
-        if (isDisableAction) return;
-
         switch (curPlayerState)
         {
             case PlayerState.Idle:
                 break;
             case PlayerState.Walk:
+                PlayerWalk_Animation();
                 break;
             case PlayerState.Run:
                 break;
@@ -135,70 +126,96 @@ public partial class PlayerController : MonoBehaviour
 
     public void SetPlayerState(PlayerState state)
     {
-        if (curPlayerState != state)
+        if (!isDisableAction)
         {
             curPlayerState = state;
-
             PlayerStateMachine();
         }
-        else if(state == PlayerState.Attack) PlayerStateMachine();
+        else if (canAttackCombo || state == PlayerState.Attack)
+        {
+            PlayerStateMachine();
+        }
     }
 
     private void PlayerSprint()
     {
         if (playerInput.isSprint)
         {
-            playerStats.moveSpeed = player_SprintSpeed;
+            if (!CompareToStamina(runStaminaAmount))
+            {
+                player.playerStats.moveSpeed = player_DefaultSpeed;
+                return;
+            }
+            MinusToStamina(runStaminaAmount);
+
+            player.playerStats.moveSpeed = player_SprintSpeed;
             SetPlayerState(PlayerState.Run);
         }
-        else if (playerStats.moveSpeed != player_DefaultSpeed)
+        else if (player.playerStats.moveSpeed != player_DefaultSpeed)
         {
-            playerStats.moveSpeed = player_DefaultSpeed;
+            player.playerStats.moveSpeed = player_DefaultSpeed;
             SetPlayerState(PlayerState.Idle);
         }
     }
 
     private void PlayerRoll()
     {
-        if ((playerInput.isRoll && !isDisableAction) && isMove)
+        if ((playerInput.isRoll && !isDisableAction) && isWalk)
         {
-            //var rotation = Quaternion.LookRotation(rollDirection);
+            //var rotation = Quaternion.LookRotation(rotateDirection.normalized);
             //rotation.y = 0;
 
             //transform.rotation = rotation;
+
+            if (!CompareToStamina(rollStaminaAmount)) return;
+            MinusToStamina(rollStaminaAmount);
             SetPlayerState(PlayerState.Roll);
         }
     }
+
+    #region Attack
 
     private void PlayerAttack()
     {
         if (playerInput.isAttack)
         {
-            if (attackCount >= 3) attackCount = 0;
-            attackCount++;
+            if (curAttackCount == 0 || (canAttackCombo && canAttackInput))
+            {
+                if (!CompareToStamina(attackStaminaAmount)) return;
+                MinusToStamina(attackStaminaAmount);
 
-            print(attackCount);
-            SetPlayerState(PlayerState.Attack);
+                if (curAttackCount >= 4) curAttackCount = 0;
+                curAttackCount++;
+                canAttackInput = false;
 
-            if (attackCoolCor != null) StopCoroutine(attackCoolCor);
-            attackCoolCor = StartCoroutine(AttackInputCheck(2.5f));
+                SetPlayerState(PlayerState.Attack);
+            }
         }
     }
-
-    private IEnumerator AttackInputCheck(float time)
+     
+    public void CanAttackCombo()
     {
-        float curTime = 0;
+        canAttackCombo = true;
+        canAttackInput = true;
+    }
+    public void CanNotAttackCombo()
+    {
+        curAttackCount = 0;
+        canAttackCombo = false;
+        SetAnimationValue(false, false, false);
+    }
 
-        while (true)
-        {
-            if (time <= curTime)
-                break;
+    #endregion
 
-            curTime += Time.deltaTime;
-            yield return null;
-        }
-        attackCount = 0;
-        playerAnimator.SetInteger("attackCount", attackCount);
+    private bool CompareToStamina(float amount)
+    {
+        if (player.Stamina > amount) return true;
+
+        return false;
+    }
+    private void MinusToStamina(float amount)
+    {
+        player.Stamina -= amount;
     }
 }
 

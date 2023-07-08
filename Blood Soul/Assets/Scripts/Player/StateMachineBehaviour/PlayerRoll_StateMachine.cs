@@ -8,8 +8,8 @@ public class PlayerRoll_StateMachine : StateMachineBehaviour
     {
         var controller = animator.GetComponent<PlayerController>();
 
-        animator.applyRootMotion = false;
-        controller.isIgnoreInput = false;
         controller.isDisableAction = false;
+        controller.isIgnoreInput = false;
+        animator.applyRootMotion = false;
     }
 }
