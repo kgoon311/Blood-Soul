@@ -16,7 +16,7 @@ public class PlayerStats
     {
         health = 200;
         stamina = 100;
-        moveSpeed = 6;
+        moveSpeed = 10;
         jumpForce = 8;
         attackDmg = 20;
     }
@@ -37,21 +37,21 @@ public partial class PlayerController : MonoBehaviour
     private Animator playerAnimator;
     private Rigidbody rigidBody;
     private Vector3 rotateDirection;
-    private Vector3 rollDirection;
 
     private float turnSmoothTime;
     private float player_DefaultSpeed;
     private float player_SprintSpeed;
     private int curAttackCount = 0;
 
-    private bool canAttackCombo = true;
+    private bool canAttackCombo = false;
+    private bool canAttackInput = true;
     //private bool isSword = false;
     //private bool isInvis = false;
     public bool isWalk
     {
         get
         {
-            if(isIgnoreInput || isDisableAction)
+            if (isIgnoreInput || isDisableAction)
             {
                 return false;
             }
@@ -74,7 +74,7 @@ public partial class PlayerController : MonoBehaviour
 
         turnSmoothTime = 5.5f;
         player_DefaultSpeed = playerStats.moveSpeed;
-        player_SprintSpeed = playerStats.moveSpeed + 9f;
+        player_SprintSpeed = playerStats.moveSpeed + 8f;
     }
 
     private void FixedUpdate()
@@ -99,7 +99,6 @@ public partial class PlayerController : MonoBehaviour
         moveDirection.y = 0;
 
         rotateDirection = moveDirection;
-        rollDirection = moveDirection.normalized;
         moveDirection = moveDirection.normalized;
 
         var velocity = moveDirection * playerStats.moveSpeed + Vector3.up * rigidBody.velocity.y;
@@ -141,6 +140,7 @@ public partial class PlayerController : MonoBehaviour
 
     public void SetPlayerState(PlayerState state)
     {
+        //if (state == curPlayerState) return;
         if (isDisableAction) return;
 
         curPlayerState = state;
@@ -165,7 +165,7 @@ public partial class PlayerController : MonoBehaviour
     {
         if ((playerInput.isRoll && !isDisableAction) && isWalk)
         {
-            //var rotation = Quaternion.LookRotation(rollDirection);
+            //var rotation = Quaternion.LookRotation(rotateDirection.normalized);
             //rotation.y = 0;
 
             //transform.rotation = rotation;
@@ -173,43 +173,37 @@ public partial class PlayerController : MonoBehaviour
         }
     }
 
+    #region Attack
+
     private void PlayerAttack()
     {
-        if (playerInput.isAttack && canAttackCombo)
+        if (playerInput.isAttack)
         {
-            //curAttackCount++;
-            //SetPlayerState(PlayerState.Attack);
-
-            StartCoroutine(AttackComboCheck());
-            canAttackCombo = false;
-        }
-    }
-
-    private IEnumerator AttackComboCheck()
-    {
-        yield return new WaitUntil(() => !isDisableAction);
-
-        if (curAttackCount >= 3) curAttackCount = 0;
-        curAttackCount++;
-        SetPlayerState(PlayerState.Attack);
-
-        yield return new WaitUntil
-            (() => playerAnimator.GetCurrentAnimatorStateInfo(1).IsName($"PlayerAttack_Anim_{curAttackCount}"));
-
-        while (playerAnimator.GetCurrentAnimatorStateInfo(1).normalizedTime < 0.99f)
-        {
-            if (playerInput.isAttack && playerAnimator.GetCurrentAnimatorStateInfo(1).normalizedTime >= 0.5f)
+            if ((curAttackCount == 0 || canAttackCombo) && canAttackInput)
             {
-                StartCoroutine(AttackComboCheck());
-                yield break;
-            }
-            yield return null;
-        }
+                if (curAttackCount >= 3) curAttackCount = 0;
 
-        curAttackCount = 0;
-        canAttackCombo = true;
-        playerAnimator.SetInteger("attackCount", curAttackCount);
+                curAttackCount++;
+                canAttackInput = false;
+                SetAnimationValue(false, false, false);
+                SetPlayerState(PlayerState.Attack);
+            }
+        }
     }
+
+    public void CanAttackCombo()
+    {
+        canAttackCombo = true;
+        canAttackInput = true;
+    }
+    public void CanNotAttackCombo()
+    {
+        curAttackCount = 0;
+        canAttackCombo = false;
+        SetAnimationValue(false, false, false);
+    }
+
+    #endregion
 }
 
 public enum PlayerState

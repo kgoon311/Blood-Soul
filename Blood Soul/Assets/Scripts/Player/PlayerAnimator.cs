@@ -13,14 +13,13 @@ public partial class PlayerController
         else playerAnimator.SetBool("isRun", playerInput.isSprint);
     }
 
-    private void SetAnimation(bool disable = false, bool rootMotion = false, bool ignore = false)
+    public void SetAnimationValue(bool disable = false, bool rootMotion = false, bool ignore = false)
     {
         isDisableAction = disable;
         isIgnoreInput = ignore;
         playerAnimator.applyRootMotion = rootMotion;
     }
-
-    private void SetAnimation(string name, bool disable = false, bool rootMotion = false, bool ignore = false)
+    private void PlayTargetAnimation(string name, bool disable = false, bool rootMotion = false, bool ignore = false)
     {
         isDisableAction = disable;
         isIgnoreInput = ignore;
@@ -28,12 +27,22 @@ public partial class PlayerController
 
         playerAnimator.Play(name);
     }
+    private void PlayTargetAnimation(string name, float fadeOut, bool disable = false, bool rootMotion = false, bool ignore = false)
+    {
+        isDisableAction = disable;
+        isIgnoreInput = ignore;
+        playerAnimator.applyRootMotion = rootMotion;
 
-    private void PlayerRoll_Animation() => SetAnimation("Player_Roll", true, true, true);
+        playerAnimator.CrossFade(name, fadeOut);
+    }
+
+    private void PlayerRoll_Animation() => PlayTargetAnimation("Player_Roll", true, true, true);
 
     private void PlayerAttack_Animation()
     {
-        SetAnimation(true, true, true);
-        playerAnimator.SetInteger("attackCount", curAttackCount);
+        if (curAttackCount > 1)
+            PlayTargetAnimation($"Player_Attack{curAttackCount}", 0.1f, true, true, true);
+        else
+            PlayTargetAnimation($"Player_Attack{curAttackCount}", true, true, true);
     }
 }
