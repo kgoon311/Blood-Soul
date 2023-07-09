@@ -9,6 +9,7 @@ public partial class PlayerController : MonoBehaviour
     [SerializeField] private CameraHandler playerCamera;
     [SerializeField] private GameObject playerSword;
     [SerializeField] private GameObject swordTrail;
+    [SerializeField] private GameObject swordSlash;
 
     private PlayerState curPlayerState = PlayerState.Idle;
     private PlayerInput playerInput;
@@ -248,11 +249,12 @@ public partial class PlayerController : MonoBehaviour
     private void Player_Skill()
     {
         if (!CompareToMP(skillMpAmount)) return;
+        if (!isExistSkill) return;
+
         if (playerInput.isSkill && !isDisableAction)
         {
             MinusToMP(skillMpAmount);
-
-
+            PlayerSkill_Animation();
         }
     }
 

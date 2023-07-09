@@ -15,4 +15,4 @@ MonoBehaviour:
   itemName: Sword Slash
   type: 0
   itemUI: {fileID: 2361303403347424544, guid: c050d444beb91be4aa15981a13e5ad58, type: 3}
-  itemSprite: {fileID: -17268564, guid: 23ba041e43f6868408aa48b50e7a387a, type: 3}
+  itemSprite: {fileID: 21300000, guid: 502f6a5ac824e3f46a068e1366ab363c, type: 3}
