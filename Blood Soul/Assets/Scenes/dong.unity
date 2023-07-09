@@ -2080,6 +2080,10 @@ MonoBehaviour:
   rotationSpeed: 2
   lookSpeed: 0
   moveSpeed: 0.2
+  defaultPosition: 0
+  cameraSphereRadius: 0
+  cameraCollisionOffset: 0
+  minimumCollisionOffset: 0
 --- !u!4 &197782030
 Transform:
   m_ObjectHideFlags: 0
@@ -4511,6 +4515,7 @@ GameObject:
   - component: {fileID: 461295909}
   - component: {fileID: 461295911}
   - component: {fileID: 461295910}
+  - component: {fileID: 461295912}
   m_Layer: 0
   m_Name: FlameStream
   m_TagString: Untagged
@@ -4554,7 +4559,7 @@ ParticleSystemRenderer:
   m_RenderingLayerMask: 4294967295
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 7a306caa8f9f7ed40a5361ce411cdf1b, type: 2}
+  - {fileID: 2100000, guid: ceabe565730f82548935ffbc23a068bf, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -8378,21 +8383,15 @@ ParticleSystem:
     collidesWithDynamic: 1
     interiorCollisions: 0
   TriggerModule:
-    enabled: 0
+    enabled: 1
     serializedVersion: 2
-    inside: 1
+    inside: 0
     outside: 0
-    enter: 0
+    enter: 2
     exit: 0
     colliderQueryMode: 0
     radiusScale: 1
-    primitives:
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
+    primitives: []
   SubModule:
     serializedVersion: 2
     enabled: 0
@@ -9340,6 +9339,18 @@ ParticleSystem:
         m_PostInfinity: 2
         m_RotationOrder: 4
     vectorLabel1_3: W
+--- !u!114 &461295912
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 461295908}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d3f5c0ed71088b84887325c63351060c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &461862514
 GameObject:
   m_ObjectHideFlags: 0
@@ -28805,8 +28816,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 959680818}
-  m_LocalRotation: {x: -0.69934034, y: 0.031332906, z: 0.16077633, w: 0.69576746}
-  m_LocalPosition: {x: -0.09709391, y: 0.5215265, z: 0.8250559}
+  m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -34705,8 +34716,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1065534043}
-  m_LocalRotation: {x: -0.65989906, y: -0.018583015, z: 0.005589246, w: 0.75110364}
-  m_LocalPosition: {x: -0.15834492, y: 0.6392999, z: -0.8034335}
+  m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -35155,17 +35166,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a34a3bbdcbddc77499a0e0f6bfd5b4b5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerStats:
-    health: 0
-    stamina: 0
-    moveSpeed: 0
-    jumpForce: 0
-    attackDmg: 0
+  player: {fileID: 0}
   playerCamera: {fileID: 197782029}
   playerSword: {fileID: 552792415}
-  player_HeadTrasnfrom: {fileID: 1721201896}
-  player_HandTransform: {fileID: 456945597}
-  player_SwordHolderTransform: {fileID: 1921703477}
+  swordTrail: {fileID: 0}
 --- !u!114 &1098106042
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -42798,6 +42802,7 @@ GameObject:
   - component: {fileID: 1313702998}
   - component: {fileID: 1313703000}
   - component: {fileID: 1313702999}
+  - component: {fileID: 1313703001}
   m_Layer: 0
   m_Name: FlameStream
   m_TagString: Untagged
@@ -42841,7 +42846,7 @@ ParticleSystemRenderer:
   m_RenderingLayerMask: 4294967295
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 7a306caa8f9f7ed40a5361ce411cdf1b, type: 2}
+  - {fileID: 2100000, guid: a19299650f3eac0459b15ce9e42eac07, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -46665,21 +46670,15 @@ ParticleSystem:
     collidesWithDynamic: 1
     interiorCollisions: 0
   TriggerModule:
-    enabled: 0
+    enabled: 1
     serializedVersion: 2
-    inside: 1
+    inside: 0
     outside: 0
-    enter: 0
+    enter: 2
     exit: 0
     colliderQueryMode: 0
     radiusScale: 1
-    primitives:
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
+    primitives: []
   SubModule:
     serializedVersion: 2
     enabled: 0
@@ -47627,6 +47626,18 @@ ParticleSystem:
         m_PostInfinity: 2
         m_RotationOrder: 4
     vectorLabel1_3: W
+--- !u!114 &1313703001
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1313702997}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d3f5c0ed71088b84887325c63351060c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1318153180
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -73437,7 +73448,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 1098106041}
-  isTestAttack: 1
+  isTestAttack: 0
   testType: 0
   phase: 0
   maxHp: 100
@@ -128709,6 +128720,7 @@ GameObject:
   - component: {fileID: 5289591978891381326}
   - component: {fileID: 5451570100416211264}
   - component: {fileID: 5450323662741961554}
+  - component: {fileID: 5451570100416211265}
   m_Layer: 0
   m_Name: FlameStream
   m_TagString: Untagged
@@ -137342,21 +137354,15 @@ ParticleSystem:
     collidesWithDynamic: 1
     interiorCollisions: 0
   TriggerModule:
-    enabled: 0
+    enabled: 1
     serializedVersion: 2
-    inside: 1
+    inside: 0
     outside: 0
-    enter: 0
+    enter: 2
     exit: 0
     colliderQueryMode: 0
     radiusScale: 1
-    primitives:
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
+    primitives: []
   SubModule:
     serializedVersion: 2
     enabled: 0
@@ -138304,6 +138310,18 @@ ParticleSystem:
         m_PostInfinity: 2
         m_RotationOrder: 4
     vectorLabel1_3: W
+--- !u!114 &5451570100416211265
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5287281440579051886}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d3f5c0ed71088b84887325c63351060c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &5465905464319228189
 GameObject:
   m_ObjectHideFlags: 0

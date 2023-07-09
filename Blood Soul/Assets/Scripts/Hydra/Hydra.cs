@@ -55,6 +55,7 @@ public class Hydra : MonoBehaviour
     [SerializeField] private GameObject[] breathPS;
     [SerializeField] private GameObject[] chargerPS;
     [SerializeField] private GameObject[] headPos;
+    private bool isBreathHit;
     private void Awake()
     {
         instance = this;
@@ -270,6 +271,14 @@ public class Hydra : MonoBehaviour
 
         isMove = true;
         yield return null;
+    }
+    public void BreathCollision()
+    {
+        if (isBreathHit == false)
+        {
+            isBreathHit = true;
+            Debug.Log("Breath Hit");
+        }
     }
 
     ///////////////// - Anim Trigger - //////////////////////
