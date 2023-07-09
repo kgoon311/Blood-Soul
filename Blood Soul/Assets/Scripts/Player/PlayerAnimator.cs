@@ -67,4 +67,10 @@ public partial class PlayerController
         SoundManager.Inst.PlaySFX(SoundEffect.PlayerSkill);
     }
     public void PlayerDie_Animation() => PlayTargetAnimation("Player_Death", true, true, true);
+
+    public void PlayerKnockBack_Animation()
+    {
+        playerAnimator.SetTrigger("isKnockback");
+        SetAnimationValue(true, true, true);
+    }
 }

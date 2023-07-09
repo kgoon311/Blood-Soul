@@ -100,7 +100,7 @@ public class Player : Singleton<Player>
             UIManager.Inst.FadeOut(4, false);
         }
     }
-    public void GetDamage(float damage)
+    public void GetDamage(float damage, bool knockback = false)
     {
         if (playerController.isInvis) return;
 
@@ -108,6 +108,8 @@ public class Player : Singleton<Player>
         {
             HP -= damage;
         }
+
+        if (knockback) playerController.PlayerKnockBack_Animation();
     }
     private void PlayBack_Stamina()
     {

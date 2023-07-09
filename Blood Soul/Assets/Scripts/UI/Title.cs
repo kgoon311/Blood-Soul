@@ -12,6 +12,8 @@ public class Title : MonoBehaviour
     private float timer;
     void Start()
     {
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
         color = image.color;
     }
 
