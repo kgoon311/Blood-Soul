@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Net.NetworkInformation;
 using UnityEngine;
 
 public class Player : Singleton<Player>
@@ -17,6 +16,7 @@ public class Player : Singleton<Player>
     private float maxPlayerStamina;
     private bool isDie = false;
 
+    public Potion[] potions;
     public int CurItemIndex { get; set; } = 0;
     #region Gauge
 
@@ -34,7 +34,7 @@ public class Player : Singleton<Player>
             playerStats.hp = value;
         }
     }
-    public float Mp
+    public float MP
     {
         get => playerStats.mp;
         set
@@ -71,6 +71,9 @@ public class Player : Singleton<Player>
 
         SetInst();
         PlayerInit();
+
+        MP -= 50f;
+        HP -= 70f;
     }
 
     private void PlayerInit()

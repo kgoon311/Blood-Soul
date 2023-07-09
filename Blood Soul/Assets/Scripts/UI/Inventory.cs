@@ -9,6 +9,7 @@ public class Inventory : MonoBehaviour
     [SerializeField] private RectTransform skillUI;
     [SerializeField] private Image curItemUI;
     [SerializeField] private Image nextItemUI;
+    [SerializeField] private Text curItemCount;
     [Space(20f)]
     [SerializeField] private GetUI getUI;
     [SerializeField] private Sprite[] items;
@@ -71,6 +72,11 @@ public class Inventory : MonoBehaviour
         var temp = curItemUI.sprite;
         curItemUI.sprite = items[index];
         nextItemUI.sprite = temp;
+    }
+
+    private void Update()
+    {
+        curItemCount.text = $"{Player.Inst.potions[Player.Inst.CurItemIndex].count}";
     }
 }
 

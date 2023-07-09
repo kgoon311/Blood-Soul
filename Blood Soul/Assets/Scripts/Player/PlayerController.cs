@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public partial class PlayerController : MonoBehaviour
@@ -9,6 +8,7 @@ public partial class PlayerController : MonoBehaviour
     [Space(10)]
     [SerializeField] private CameraHandler playerCamera;
     [SerializeField] private GameObject playerSword;
+    [SerializeField] private GameObject swordTrail;
 
     private PlayerState curPlayerState = PlayerState.Idle;
     private PlayerInput playerInput;
@@ -24,6 +24,7 @@ public partial class PlayerController : MonoBehaviour
     private readonly float runStaminaAmount = 0.1f;
     private readonly float rollStaminaAmount = 15f;
     private readonly float attackStaminaAmount = 10f;
+    private readonly float skillMpAmount = 80f;
 
     private bool canAttackCombo = false;
     private bool canAttackInput = true;
@@ -33,7 +34,7 @@ public partial class PlayerController : MonoBehaviour
     {
         get
         {
-            if (isIgnoreInput || isDisableAction)
+            if (isIgnoreInput)
             {
                 return false;
             }
@@ -69,8 +70,10 @@ public partial class PlayerController : MonoBehaviour
         PlayerSprint();
         PlayerRoll();
         PlayerAttack();
-        AnimationUpdate();
         Player_ItemSwap();
+        Player_UseItem();
+        Player_Skill();
+        AnimationUpdate();
     }
 
     private void PlayerMovement(Vector3 moveInput)
@@ -188,12 +191,18 @@ public partial class PlayerController : MonoBehaviour
 
         IEnumerator AttackCoroutine()
         {
-            if (!canAttackCombo) yield return new WaitUntil(() => !isDisableAction);
-            if (curAttackCount >= 4) curAttackCount = 0;
+            if (curAttackCount == 0)
+            {
+                curAttackCount++;
+                yield return new WaitUntil(() => !isDisableAction);
+            }
+            else
+            {
+                if (curAttackCount >= 4) curAttackCount = 0;
+                curAttackCount++;
+            }
 
-            curAttackCount++;
             canAttackInput = false;
-
             MinusToStamina(attackStaminaAmount);
             SetPlayerState(PlayerState.Attack);
             yield break;
@@ -223,15 +232,49 @@ public partial class PlayerController : MonoBehaviour
         }
     }
 
+    private void Player_UseItem()
+    {
+        if(playerInput.isItem && !isDisableAction)
+        {
+            var potion = player.potions[player.CurItemIndex];
+            if (potion.count <= 0) return;
+
+            potion.Use();
+            potion.count--;
+            PlayerUseItem_Animation();
+        }
+    }
+
+    private void Player_Skill()
+    {
+        if (!CompareToMP(skillMpAmount)) return;
+        if (playerInput.isSkill && !isDisableAction)
+        {
+            MinusToMP(skillMpAmount);
+
+
+        }
+    }
+
     private bool CompareToStamina(float amount)
     {
         if (player.Stamina > amount) return true;
 
         return false;
     }
+    private bool CompareToMP(float amount)
+    {
+        if (player.MP > amount) return true;
+
+        return false;
+    }
     private void MinusToStamina(float amount)
     {
         player.Stamina -= amount;
+    }
+    private void MinusToMP(float amount)
+    {
+        player.MP -= amount;
     }
 }
 

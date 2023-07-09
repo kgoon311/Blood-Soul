@@ -47,4 +47,23 @@ public partial class PlayerController
         else
             PlayTargetAnimation($"Player_Attack{curAttackCount}", true, true, true);
     }
+
+    private void PlayerUseItem_Animation()
+    {
+        SetAnimationValue(true, false, false);
+        playerAnimator.SetTrigger("isDrink");
+    }
+
+    public void PlayerItemEffect() => player.potions[player.CurItemIndex].effect.gameObject.SetActive(true);
+    public void OnSwordTrail() => swordTrail.gameObject.SetActive(true);
+    public void OffSwordTrail() => swordTrail.gameObject.SetActive(false);
+
+    private void PlayerSkill_Animation()
+    {
+
+    }
+    public void PlayerSkillEffect()
+    {
+
+    }
 }
