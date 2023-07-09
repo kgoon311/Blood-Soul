@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Player : Singleton<Player>
 {
@@ -96,7 +97,7 @@ public class Player : Singleton<Player>
         {
             isDie = true;
             playerController.PlayerDie_Animation();
-            //you die
+            UIManager.Inst.FadeOut(4, false);
         }
     }
     public void GetDamage(float damage)

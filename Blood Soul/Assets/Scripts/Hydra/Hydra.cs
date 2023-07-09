@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.AI;
 
 enum Pattern
@@ -17,17 +18,39 @@ public class Hydra : MonoBehaviour
     static public Hydra instance;
     public PlayerController player;
 
+    private bool isDie;
     private Animator myAnimator;
     private Rigidbody myRigidbody;
+    [SerializeField] private GameObject hpUi;
+    [SerializeField] private Image hpSlider;
 
     [SerializeField] private bool isTestAttack;
     [SerializeField] private Pattern testType;
 
-    private bool isMove = true;
+    private bool isMove = false;
     [SerializeField] private int phase = 0;
     [Header("Status")]
+    [SerializeField] private GaugeBar HydraHpGauge;
     [SerializeField] private float maxHp;
     [SerializeField] private float hp;
+    public float HP
+    {
+        get => hp;
+        set
+        {
+            if (value <= 0)
+            {
+                value = 0;
+                Die();
+            }
+            else if (value > maxHp) value = maxHp;
+
+            if (value > hp) HydraHpGauge.SetGaugeValue(value / maxHp, 0.1f);
+            else HydraHpGauge.SetGaugeValue(value / maxHp, 1.25f);
+
+            hp = value;
+        }
+    }
     [SerializeField] private float moveSpeed;
     [SerializeField] private float rotationSpeed;
     [SerializeField] private float[] attackSpeed;
@@ -39,14 +62,17 @@ public class Hydra : MonoBehaviour
     [Header("Bite")]
     [SerializeField] private float bite_AngleRange = 30f;
     [SerializeField] private float bite_Radius = 3f;
+    [SerializeField] private float biteDamage;
 
     [Header("Tail")]
     [SerializeField] private Collider[] tailColider;
+    [SerializeField] private float tailDamage;
     private bool isTailHit;
 
     [Header("Earth")]
     [SerializeField] private ParticleSystem earthQuakePS;
     [SerializeField] private GameObject[] footPos;
+    [SerializeField] private float earthDamage;
     private bool isEarthQuakeHit;
     private bool isLeftFoot = false;
 
@@ -55,6 +81,7 @@ public class Hydra : MonoBehaviour
     [SerializeField] private GameObject[] breathPS;
     [SerializeField] private GameObject[] chargerPS;
     [SerializeField] private GameObject[] headPos;
+    [SerializeField] private float[] breathDamage;
     private bool isBreathHit;
     private void Awake()
     {
@@ -81,14 +108,30 @@ public class Hydra : MonoBehaviour
         }
 
         float percent = hp / maxHp;
-        
-        if (percent < 0.6f)
+        if (percent > 0.6f)
         {
-            phase = 1;
+            phase = 0;
         }
-        else if(percent < 0.3f)
+        else if (percent > 0.3f)
+            phase = 1;
+        else if (percent > 0f)
             phase = 2;
+        else if (isDie == false)
+            Die();
 
+    }
+    public void MoveStart()
+    {
+        isMove = true;
+        hpUi.SetActive(true);
+        //Play Music
+    }
+    private void Die()
+    {
+        isMove = false;
+        isDie = true;
+        myAnimator.SetTrigger("Die");
+        UIManager.Inst.FadeOut(4f, true);
     }
     private void Move()
     {
@@ -120,11 +163,10 @@ public class Hydra : MonoBehaviour
 
             if (dis > breathPatternRange)
             {
-                if (phase == 0)
+                if (phase < 2)
                     beforeParttern = 0;
                 else
                     beforeParttern = Random.Range(0, 2);
-
             }
             else
             { 
@@ -183,7 +225,7 @@ public class Hydra : MonoBehaviour
 
         bool hit = BiteCircularSector(bite_Radius, bite_AngleRange);
         if (hit)
-            Debug.Log("Bite Hit");
+            Player.Inst.GetDamage(biteDamage);
 
         yield return new WaitForSeconds(1f);
 
@@ -230,7 +272,8 @@ public class Hydra : MonoBehaviour
         if (isTailHit == false)
         {
             isTailHit = true;
-            Debug.Log("Tail Hit");
+
+            Player.Inst.GetDamage(tailDamage);
         }
     }
 
@@ -248,28 +291,23 @@ public class Hydra : MonoBehaviour
         if (isEarthQuakeHit == false)
         {
             isEarthQuakeHit = true;
-            Debug.Log("EarthQuake Hit");
+            StartCoroutine(EarthQuakeTime());
+            Player.Inst.GetDamage(earthDamage);
         }
+    }
+    private IEnumerator EarthQuakeTime()
+    {
+        yield return new WaitForSeconds(0.3f);
+            isEarthQuakeHit = false;
     }
     private IEnumerator BreathAttack()
     {
         isMove = false;
 
-        yield return new WaitForSeconds(1.5f);
-
-        float timer = 0;
-        while (timer < 1)
-        {
-            timer += Time.deltaTime / 3;
-            Vector3 dir = headPos[0].transform.position - headPos[1].transform.position;
-            if (Physics.Raycast(headPos[0].transform.position, dir * 20, 100, LayerMask.GetMask("Player")) == true)
-            {
-                Debug.Log("hit");
-            }
-            yield return null;
-        }
+        yield return new WaitForSeconds(7f);
 
         isMove = true;
+        isBreathHit = false;
         yield return null;
     }
     public void BreathCollision()
@@ -277,7 +315,18 @@ public class Hydra : MonoBehaviour
         if (isBreathHit == false)
         {
             isBreathHit = true;
-            Debug.Log("Breath Hit");
+            switch(phase)
+            {
+                case 0:
+                    Player.Inst.GetDamage(breathDamage[0]);
+                    break;
+                case 1:
+                    Player.Inst.GetDamage(breathDamage[1]);
+                    break;
+                case 2:
+                    Player.Inst.GetDamage(breathDamage[2]);
+                    break;
+            }
         }
     }
 
@@ -300,7 +349,7 @@ public class Hydra : MonoBehaviour
                     chargerPS[1].SetActive(true); 
                     yield return new WaitForSeconds(1.5f);
                     breathPS[1].SetActive(true);
-                    break;
+                    break;  
                 }
             case 1:
                 {
@@ -357,7 +406,7 @@ public class Hydra : MonoBehaviour
     {
         if (damage > 0)
         {
-            hp -= damage;
+            HP -= damage;
         }
     }
 
