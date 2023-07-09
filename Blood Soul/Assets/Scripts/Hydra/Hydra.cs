@@ -146,8 +146,7 @@ public class Hydra : MonoBehaviour
         Collider[] isPlayer = Physics.OverlapBox(transform.position, Vector3.one * MoveRange, Quaternion.identity, LayerMask.GetMask("Player"));
         if (isPlayer.Length <= 0)
         {
-            myAnimator.SetBool("Walk", true);
-            //SoundManager.Inst.PlaySFX(SoundEffect.HydraWalk);
+            myAnimator.SetBool("Walk", true);           
             myRigidbody.velocity = new Vector3(velocity.x, myRigidbody.velocity.y, velocity.z);
         }
         else
@@ -200,6 +199,7 @@ public class Hydra : MonoBehaviour
             case Pattern.Bite:
                 {
                     myAnimator.SetTrigger("Bite");
+                    SoundManager.Inst.PlaySFX(SoundEffect.HydraWalk);
                     StartCoroutine(BiteAttack());
                     break;
                 }
@@ -229,7 +229,7 @@ public class Hydra : MonoBehaviour
 
         bool hit = BiteCircularSector(bite_Radius, bite_AngleRange);
         if (hit)
-            Player.Inst.GetDamage(biteDamage);
+            Player.Inst.GetDamage(biteDamage, true);
 
         yield return new WaitForSeconds(1f);
 
@@ -278,7 +278,7 @@ public class Hydra : MonoBehaviour
         {
             isTailHit = true;
 
-            Player.Inst.GetDamage(tailDamage);
+            Player.Inst.GetDamage(tailDamage, true);
         }
     }
 

@@ -148,16 +148,19 @@ public partial class PlayerController : MonoBehaviour
         {
             if (!CompareToStamina(runStaminaAmount))
             {
+                playerWalkSound.pitch = 1;
                 player.playerStats.moveSpeed = player_DefaultSpeed;
                 return;
             }
             MinusToStamina(runStaminaAmount);
 
+            playerWalkSound.pitch = 2;
             player.playerStats.moveSpeed = player_SprintSpeed;
             SetPlayerState(PlayerState.Run);
         }
         else if (player.playerStats.moveSpeed != player_DefaultSpeed)
         {
+            playerWalkSound.pitch = 1;
             player.playerStats.moveSpeed = player_DefaultSpeed;
             SetPlayerState(PlayerState.Idle);
         }
