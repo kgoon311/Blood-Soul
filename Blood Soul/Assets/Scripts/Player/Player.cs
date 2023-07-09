@@ -25,7 +25,11 @@ public class Player : Singleton<Player>
         get => playerStats.hp;
         set
         {
-            if (value < 0) value = 0;
+            if (value <= 0)
+            {
+                value = 0; 
+                Die(); 
+            }
             else if (value > maxPlayerHp) value = maxPlayerHp;
 
             if (value > playerStats.hp) playerHpGauge.SetGaugeValue(value / maxPlayerHp, 0.1f);
@@ -71,9 +75,6 @@ public class Player : Singleton<Player>
 
         SetInst();
         PlayerInit();
-
-        MP -= 50f;
-        HP -= 70f;
     }
 
     private void PlayerInit()
@@ -89,6 +90,22 @@ public class Player : Singleton<Player>
         PlayBack_Stamina();
     }
 
+    private void Die()
+    {
+        if (!isDie)
+        {
+            isDie = true;
+            playerController.PlayerDie_Animation();
+            //you die
+        }
+    }
+    public void GetDamage(float damage)
+    {
+        if(damage > 0)
+        {
+            HP -= damage;
+        }
+    }
     private void PlayBack_Stamina()
     {
         if(Stamina < maxPlayerStamina && playerStaminaGauge.isDone)
@@ -99,13 +116,6 @@ public class Player : Singleton<Player>
     }
     public void GetSkill() => playerController.isExistSkill = true;
     public void GetHelmat() => helmat.SetActive(true);
-    public void GetDamage(float damage)
-    {
-        if(damage > 0)
-        {
-            HP -= damage;
-        }
-    }
 }
 
 [System.Serializable]

@@ -60,4 +60,5 @@ public partial class PlayerController
 
     private void PlayerSkill_Animation() => PlayTargetAnimation("Player_Skill", true, true, true);
     public void PlayerSkillEffect() => swordSlash.gameObject.SetActive(true);
+    public void PlayerDie_Animation() => PlayTargetAnimation("Player_Death", true, true, true);
 }

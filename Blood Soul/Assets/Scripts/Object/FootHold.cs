@@ -12,17 +12,16 @@ public class FootHold : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if(transform.position.y >= maxY)
-        {
-            rb.velocity = Vector3.zero;
-            rb.isKinematic = true;
-            isActive = false;
-        }
-
-        if (isActive)
+        if (isActive && transform.position.y < maxY)
         {
             rb.velocity = Vector3.up * speed;
-        }       
+        }
+        else if(maxY <= transform.position.y)
+        {
+            rb.isKinematic = true;
+            rb.velocity = Vector3.zero;
+            isActive = false;
+        }
     }
 
     private void OnCollisionEnter(Collision collision)
