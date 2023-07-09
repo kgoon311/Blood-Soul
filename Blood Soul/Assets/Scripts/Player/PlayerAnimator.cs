@@ -57,6 +57,8 @@ public partial class PlayerController
     public void PlayerItemEffect() => player.potions[player.CurItemIndex].effect.gameObject.SetActive(true);
     public void OnSwordTrail() => swordTrail.gameObject.SetActive(true);
     public void OffSwordTrail() => swordTrail.gameObject.SetActive(false);
+    public void AttackCollisionOn() => playerSword.ColliderOn();
+    public void AttackCollisionOff() => playerSword.ColliderOff();
 
     private void PlayerSkill_Animation() => PlayTargetAnimation("Player_Skill", true, true, true);
     public void PlayerSkillEffect() => swordSlash.gameObject.SetActive(true);

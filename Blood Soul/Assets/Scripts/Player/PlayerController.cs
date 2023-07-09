@@ -7,7 +7,7 @@ public partial class PlayerController : MonoBehaviour
     [SerializeField] private Player player;
     [Space(10)]
     [SerializeField] private CameraHandler playerCamera;
-    [SerializeField] private GameObject playerSword;
+    [SerializeField] private PlayerSword playerSword;
     [SerializeField] private GameObject swordTrail;
     [SerializeField] private GameObject swordSlash;
 
@@ -29,8 +29,8 @@ public partial class PlayerController : MonoBehaviour
 
     private bool canAttackCombo = false;
     private bool canAttackInput = true;
-    //private bool isSword = false;
-    //private bool isInvis = false;
+
+    public bool isInvis { get; set; } = false;
     public bool isWalk
     {
         get
@@ -164,13 +164,10 @@ public partial class PlayerController : MonoBehaviour
     private void PlayerRoll()
     {
         if ((playerInput.isRoll && !isDisableAction) && isWalk)
-        {
-            //var rotation = Quaternion.LookRotation(rotateDirection.normalized);
-            //rotation.y = 0;
-
-            //transform.rotation = rotation;
-
+        {          
             if (!CompareToStamina(rollStaminaAmount)) return;
+
+            isInvis = true;
             MinusToStamina(rollStaminaAmount);
             SetPlayerState(PlayerState.Roll);
         }

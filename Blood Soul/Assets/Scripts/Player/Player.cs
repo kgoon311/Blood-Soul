@@ -101,6 +101,8 @@ public class Player : Singleton<Player>
     }
     public void GetDamage(float damage)
     {
+        if (playerController.isInvis) return;
+
         if(damage > 0)
         {
             HP -= damage;
@@ -125,7 +127,6 @@ public class PlayerStats
     public float mp = 0;
     public float stamina = 0;
     public float moveSpeed = 0;
-    public float attackDmg = 0;
 
     public PlayerStats()
     {
@@ -133,6 +134,5 @@ public class PlayerStats
         mp = 200;
         stamina = 100;
         moveSpeed = 10;
-        attackDmg = 20;
     }
 }

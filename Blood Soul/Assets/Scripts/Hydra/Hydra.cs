@@ -353,6 +353,13 @@ public class Hydra : MonoBehaviour
         }
     }
 
+    public void GetDamage(float damage)
+    {
+        if (damage > 0)
+        {
+            hp -= damage;
+        }
+    }
 
     private void OnTriggerEnter(Collider other)
     {

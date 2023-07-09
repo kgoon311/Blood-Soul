@@ -10,6 +10,7 @@ public class PlayerRollBack_StateMachine : StateMachineBehaviour
 
         controller.isDisableAction = false;
         controller.isIgnoreInput = false;
+        controller.isInvis = false;
         animator.applyRootMotion = false;
     }
 }
