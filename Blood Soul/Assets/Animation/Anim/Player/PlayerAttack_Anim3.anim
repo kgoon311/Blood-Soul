@@ -118444,14 +118444,14 @@ AnimationClip:
     intParameter: 0
     messageOptions: 0
   - time: 0.5833333
-    functionName: CanAttackCombo
+    functionName: AttackCollisionOff
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0
     intParameter: 0
     messageOptions: 0
   - time: 0.5833333
-    functionName: AttackCollisionOff
+    functionName: CanAttackCombo
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0

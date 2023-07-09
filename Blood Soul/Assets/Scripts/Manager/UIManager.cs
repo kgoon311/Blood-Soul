@@ -44,7 +44,10 @@ public class UIManager : Singleton<UIManager>
             fadeImage[1].color = new Color(0, 0, 0, timer);
             yield return null;
         }
+
         if (clear == false)
             SceneManager.LoadScene("InGame");
+        else
+            SceneManager.LoadScene("Title");
     }
 }

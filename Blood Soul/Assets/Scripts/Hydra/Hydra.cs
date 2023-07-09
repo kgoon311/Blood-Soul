@@ -124,6 +124,7 @@ public class Hydra : MonoBehaviour
     {
         isMove = true;
         hpUi.SetActive(true);
+        SoundManager.Inst.PlayBGM();
         //Play Music
     }
     private void Die()
@@ -146,6 +147,7 @@ public class Hydra : MonoBehaviour
         if (isPlayer.Length <= 0)
         {
             myAnimator.SetBool("Walk", true);
+            //SoundManager.Inst.PlaySFX(SoundEffect.HydraWalk);
             myRigidbody.velocity = new Vector3(velocity.x, myRigidbody.velocity.y, velocity.z);
         }
         else
@@ -191,7 +193,7 @@ public class Hydra : MonoBehaviour
                         myAnimator.SetTrigger("Double");
                     else if(phase == 2)
                         myAnimator.SetTrigger("Triple");
-
+                    SoundManager.Inst.PlaySFX(SoundEffect.HydraBreath);
                     StartCoroutine(BreathAttack());
                     break;
                 }
@@ -204,12 +206,14 @@ public class Hydra : MonoBehaviour
             case Pattern.TailAttack:
                 {
                     myAnimator.SetTrigger("TaillAttack");
+                    SoundManager.Inst.PlaySFX(SoundEffect.HydraTail);
                     StartCoroutine(TailAttack());
                     break;
                 }
             case Pattern.Earthquake:
                 {
                     myAnimator.SetTrigger("EarthQuake");
+                    SoundManager.Inst.PlaySFX(SoundEffect.HydraEarthQuake);
                     StartCoroutine(EarthQuake());
                     break;
                 }
@@ -255,6 +259,7 @@ public class Hydra : MonoBehaviour
     private IEnumerator TailAttack()
     {
         isMove = false;
+        
 
         for (int i = 0; i < tailColider.Length; i++)
             tailColider[i].enabled = true;
@@ -280,6 +285,7 @@ public class Hydra : MonoBehaviour
     private IEnumerator EarthQuake()
     {
         isMove = false;
+        
 
         yield return new WaitForSeconds(8.2f);
 
@@ -406,6 +412,7 @@ public class Hydra : MonoBehaviour
     {
         if (damage > 0)
         {
+            SoundManager.Inst.PlaySFX(SoundEffect.HydraHit);
             HP -= damage;
         }
     }

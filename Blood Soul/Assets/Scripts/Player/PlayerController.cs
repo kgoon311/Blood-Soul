@@ -10,6 +10,7 @@ public partial class PlayerController : MonoBehaviour
     [SerializeField] private PlayerSword playerSword;
     [SerializeField] private GameObject swordTrail;
     [SerializeField] private GameObject swordSlash;
+    [SerializeField] private AudioSource playerWalkSound;
 
     private PlayerState curPlayerState = PlayerState.Idle;
     private PlayerInput playerInput;
@@ -35,7 +36,7 @@ public partial class PlayerController : MonoBehaviour
     {
         get
         {
-            if (isIgnoreInput)
+            if (isIgnoreInput || !canAttackInput)
             {
                 return false;
             }
@@ -75,6 +76,7 @@ public partial class PlayerController : MonoBehaviour
         Player_UseItem();
         Player_Skill();
         AnimationUpdate();
+        PlayerWalkSound();
     }
 
     private void PlayerMovement(Vector3 moveInput)
@@ -164,11 +166,12 @@ public partial class PlayerController : MonoBehaviour
     private void PlayerRoll()
     {
         if ((playerInput.isRoll && !isDisableAction) && isWalk)
-        {          
+        {
             if (!CompareToStamina(rollStaminaAmount)) return;
 
             isInvis = true;
             MinusToStamina(rollStaminaAmount);
+            SoundManager.Inst.PlaySFX(SoundEffect.PlayerRoll, 0.7f);
             SetPlayerState(PlayerState.Roll);
         }
     }
@@ -211,6 +214,7 @@ public partial class PlayerController : MonoBehaviour
     {
         canAttackCombo = true;
         canAttackInput = true;
+        SoundManager.Inst.PlaySFX(SoundEffect.PlayerSword);
     }
     public void CanNotAttackCombo()
     {
@@ -232,7 +236,7 @@ public partial class PlayerController : MonoBehaviour
 
     private void Player_UseItem()
     {
-        if(playerInput.isItem && !isDisableAction)
+        if (playerInput.isItem && !isDisableAction)
         {
             var potion = player.potions[player.CurItemIndex];
             if (potion.count <= 0) return;
@@ -274,6 +278,15 @@ public partial class PlayerController : MonoBehaviour
     private void MinusToMP(float amount)
     {
         player.MP -= amount;
+    }
+
+    private void PlayerWalkSound()
+    {
+        if (isWalk)
+        {
+            if (!playerWalkSound.isPlaying) playerWalkSound.Play();
+        }
+        else playerWalkSound.Stop();
     }
 }
 

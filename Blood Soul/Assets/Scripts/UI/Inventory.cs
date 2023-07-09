@@ -47,6 +47,7 @@ public class Inventory : MonoBehaviour
             getUI.getUIObj.color = gColor;
             yield return null;
         }
+        SoundManager.Inst.PlaySFX(SoundEffect.GetItem);
         yield return new WaitForSeconds(1f);
 
         curTime = 0;

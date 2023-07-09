@@ -47,7 +47,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   BGM: {fileID: 5350297874529658764}
   Sfxs:
-  - {fileID: 8300000, guid: 443a1b918f2b32f4a9a393fd58cd975e, type: 3}
+  - {fileID: 8300000, guid: 0fac68c1a0f90bd4c91f539ac7bf6690, type: 3}
   - {fileID: 8300000, guid: 6e3cb485f6d96d24fa99301905447414, type: 3}
   - {fileID: 8300000, guid: ca38551499e8be7449111fea42d6d71e, type: 3}
   - {fileID: 8300000, guid: 3b0184257fe7f364a9319199ab7168a4, type: 3}
@@ -72,7 +72,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: fbb34fc043b703d4f8420f76e4934838, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 1
+  m_Volume: 0.6
   m_Pitch: 1
   Loop: 1
   Mute: 0

@@ -6,11 +6,11 @@ public partial class PlayerController
 {
     private void AnimationUpdate()
     {
-        if (!isWalk || playerAnimator.applyRootMotion) playerAnimator.SetBool("isWalk", false);
-        else playerAnimator.SetBool("isWalk", isWalk);
+        if (!isWalk || playerAnimator.applyRootMotion) playerAnimator.SetBool("isWalk", false);    
+        else playerAnimator.SetBool("isWalk", isWalk);      
 
         if (!isWalk || !CompareToStamina(runStaminaAmount)) playerAnimator.SetBool("isRun", false);
-        else playerAnimator.SetBool("isRun", playerInput.isSprint);
+        else playerAnimator.SetBool("isRun", playerInput.isSprint);       
     }
 
     public void SetAnimationValue(bool disable = false, bool rootMotion = false, bool ignore = false)
@@ -61,6 +61,10 @@ public partial class PlayerController
     public void AttackCollisionOff() => playerSword.ColliderOff();
 
     private void PlayerSkill_Animation() => PlayTargetAnimation("Player_Skill", true, true, true);
-    public void PlayerSkillEffect() => swordSlash.gameObject.SetActive(true);
+    public void PlayerSkillEffect()
+    {
+        swordSlash.gameObject.SetActive(true);
+        SoundManager.Inst.PlaySFX(SoundEffect.PlayerSkill);
+    }
     public void PlayerDie_Animation() => PlayTargetAnimation("Player_Death", true, true, true);
 }

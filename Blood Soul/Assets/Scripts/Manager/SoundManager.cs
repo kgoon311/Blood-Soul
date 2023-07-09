@@ -48,14 +48,15 @@ public class SoundManager : Singleton<SoundManager>
         audioSource.clip = sfxSounds[soundName];
         audioSource.pitch = speed;
 
-        StartCoroutine(SFXBlur(audioSource, deleteTime));
         audioSource.Play();
 
         if (deleteTime != 0)
         {
             Destroy(audioSource.gameObject, deleteTime);
+            StartCoroutine(SFXBlur(audioSource, deleteTime));
             return;
         }
+
         Destroy(audioSource.gameObject, audioSource.clip.length);
     }
 
@@ -75,7 +76,7 @@ public class SoundManager : Singleton<SoundManager>
     }
 
     //BGM Àç»ý
-    public void PlayBGM(int num = 0, float volum = 0.8f)
+    public void PlayBGM(int num = 0, float volum = 0.6f)
     {
         BGM.volume = volum;
 
