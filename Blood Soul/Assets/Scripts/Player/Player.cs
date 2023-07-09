@@ -104,12 +104,12 @@ public class Player : Singleton<Player>
     {
         if (playerController.isInvis) return;
 
+        if (knockback) playerController.PlayerKnockBack_Animation();
         if(damage > 0)
         {
             HP -= damage;
         }
 
-        if (knockback) playerController.PlayerKnockBack_Animation();
     }
     private void PlayBack_Stamina()
     {
