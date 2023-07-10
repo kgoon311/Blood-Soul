@@ -15,7 +15,7 @@ public class Player : Singleton<Player>
     private float maxPlayerHp;
     private float maxPlayerMp;
     private float maxPlayerStamina;
-    private bool isDie = false;
+    public bool isDie { get; set; } = false;
 
     public Potion[] potions;
     public int CurItemIndex { get; set; } = 0;
@@ -104,10 +104,10 @@ public class Player : Singleton<Player>
     {
         if (playerController.isInvis) return;
 
-        if (knockback) playerController.PlayerKnockBack_Animation();
         if(damage > 0)
         {
             HP -= damage;
+            if (knockback) playerController.PlayerKnockBack_Animation();
         }
 
     }

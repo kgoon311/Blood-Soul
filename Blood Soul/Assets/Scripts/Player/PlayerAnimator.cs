@@ -66,11 +66,20 @@ public partial class PlayerController
         swordSlash.gameObject.SetActive(true);
         SoundManager.Inst.PlaySFX(SoundEffect.PlayerSkill);
     }
-    public void PlayerDie_Animation() => PlayTargetAnimation("Player_Death", true, true, true);
+    public void PlayerDie_Animation()
+    {
+        SetAnimationValue(true, true, true);
+        playerAnimator.SetBool("isDie", player.isDie);
+        playerAnimator.SetTrigger("isDeath");
+    }
 
     public void PlayerKnockBack_Animation()
     {
-        playerAnimator.SetTrigger("isKnockback");
+        if (isDisableAction) return;
+        if (curAttackCount > 0) curAttackCount = 0;
+
         SetAnimationValue(true, true, true);
+        print("knockBack");
+        playerAnimator.SetTrigger("isKnockback");
     }
 }

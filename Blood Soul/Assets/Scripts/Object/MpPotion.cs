@@ -6,6 +6,6 @@ public class MpPotion : Potion
 {
     public override void Use()
     {
-        Player.Inst.MP += 20f;
+        Player.Inst.MP += 40f;
     }
 }

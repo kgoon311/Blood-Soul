@@ -7,6 +7,6 @@ public class HpPotion : Potion
 {
     public override void Use()
     {
-        Player.Inst.HP += 40f;
+        Player.Inst.HP += 50f;
     }
 }
